@@ -1,0 +1,9 @@
+[package]
+name = "egli"
+version = "0.1.0"
+authors = ["Nerijus Arlauskas <nercury@gmail.com>"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+libc = "0.2"
+bitflags = "0.5"
