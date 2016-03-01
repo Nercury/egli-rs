@@ -2,7 +2,10 @@
 //!
 //! Use these only if higher-level EGLI or EGL abstrations are not enough.
 
-use libc::c_char;
+use libc::{
+    c_char,
+    c_void
+};
 
 use egl::{
     EGLBoolean,
@@ -15,14 +18,15 @@ use egl::{
     EGLNativeDisplayType,
     EGLNativePixmapType,
     EGLNativeWindowType,
-    EGLSurface
+    EGLSurface,
+    // EGL 1.5
+    EGLSync,
+    EGLAttrib,
+    EGLImage,
+    EGLTime,
 };
 
 extern {
-    pub fn eglBindAPI(api: EGLenum) -> EGLBoolean;
-
-    pub fn eglBindTexImage(dpy: EGLDisplay, surface: EGLSurface, buffer: EGLint) -> EGLBoolean;
-
     pub fn eglChooseConfig(dpy: EGLDisplay, attrib_list: *const EGLint,
                            configs: *mut EGLConfig, config_size: EGLint,
                            num_config: *mut EGLint) -> EGLBoolean;
@@ -33,10 +37,6 @@ extern {
     pub fn eglCreateContext(dpy: EGLDisplay, config: EGLConfig,
                             share_context: EGLContext,
                             attrib_list: *const EGLint) -> EGLContext;
-
-    pub fn eglCreatePbufferFromClientBuffer(dpy: EGLDisplay, buftype: EGLenum,
-                                            buffer: EGLClientBuffer, config: EGLConfig,
-                                            attrib_list: *const EGLint) -> EGLSurface;
 
     pub fn eglCreatePbufferSurface(dpy: EGLDisplay, config: EGLConfig,
                                    attrib_list: *const EGLint) -> EGLSurface;
@@ -59,8 +59,6 @@ extern {
     pub fn eglGetConfigs(dpy: EGLDisplay, configs: EGLConfig,
                          config_size: EGLint, num_config: *mut EGLint) -> EGLBoolean;
 
-    pub fn eglGetCurrentContext() -> EGLContext;
-
     pub fn eglGetCurrentDisplay() -> EGLDisplay;
 
     pub fn eglGetCurrentSurface(readdraw: EGLint) -> EGLSurface;
@@ -76,8 +74,6 @@ extern {
     pub fn eglMakeCurrent(dpy: EGLDisplay, draw: EGLSurface,
                           read: EGLSurface, ctx: EGLContext) -> EGLBoolean;
 
-    pub fn eglQueryAPI() -> EGLenum;
-
     pub fn eglQueryContext(dpy: EGLDisplay, ctx: EGLContext,
                            attribute: EGLint, value: *mut EGLint) -> EGLBoolean;
 
@@ -86,23 +82,73 @@ extern {
     pub fn eglQuerySurface(dpy: EGLDisplay, surface: EGLSurface,
                            attribute: EGLint, value: *mut EGLint) -> EGLBoolean;
 
-    pub fn eglReleaseTexImage(dpy: EGLDisplay, surface: EGLSurface,
-                              buffer: EGLint) -> EGLBoolean;
-
-    pub fn eglReleaseThread() -> EGLBoolean;
-
-    pub fn eglSurfaceAttrib(dpy: EGLDisplay, surface: EGLSurface,
-                            attribute: EGLint, value: EGLint) -> EGLBoolean;
-
     pub fn eglSwapBuffers(dpy: EGLDisplay, surface: EGLSurface) -> EGLBoolean;
 
-    pub fn eglSwapInterval(dpy: EGLDisplay, interval: EGLint) -> EGLBoolean;
-
     pub fn eglTerminate(dpy: EGLDisplay) -> EGLBoolean;
-
-    pub fn eglWaitClient() -> EGLBoolean;
 
     pub fn eglWaitGL() -> EGLBoolean;
 
     pub fn eglWaitNative(engine: EGLint) -> EGLBoolean;
+
+    // EGL 1.1
+
+    pub fn eglBindTexImage(dpy: EGLDisplay, surface: EGLSurface, buffer: EGLint) -> EGLBoolean;
+
+    pub fn eglReleaseTexImage(dpy: EGLDisplay, surface: EGLSurface,
+                              buffer: EGLint) -> EGLBoolean;
+
+    pub fn eglSurfaceAttrib(dpy: EGLDisplay, surface: EGLSurface,
+                            attribute: EGLint, value: EGLint) -> EGLBoolean;
+
+    pub fn eglSwapInterval(dpy: EGLDisplay, interval: EGLint) -> EGLBoolean;
+
+    // EGL 1.2
+
+    pub fn eglBindAPI(api: EGLenum) -> EGLBoolean;
+
+    pub fn eglQueryAPI() -> EGLenum;
+
+    pub fn eglCreatePbufferFromClientBuffer(dpy: EGLDisplay, buftype: EGLenum,
+                                            buffer: EGLClientBuffer, config: EGLConfig,
+                                            attrib_list: *const EGLint) -> EGLSurface;
+
+    pub fn eglReleaseThread() -> EGLBoolean;
+
+    pub fn eglWaitClient() -> EGLBoolean;
+
+    // EGL 1.4
+
+    pub fn eglGetCurrentContext() -> EGLContext;
+
+    // EGL 1.5
+
+    pub fn eglCreateSync(dpy: EGLDisplay, _type: EGLenum,
+                         attrib_list: *const EGLAttrib) -> EGLSync;
+    pub fn eglDestroySync(dpy: EGLDisplay, sync: EGLSync) -> EGLBoolean;
+
+    pub fn eglClientWaitSync(dpy: EGLDisplay, sync: EGLSync, flags: EGLint,
+                             timeout: EGLTime) -> EGLint;
+
+    pub fn eglGetSyncAttrib(dpy: EGLDisplay, sync: EGLSync, attribute: EGLint,
+                            value: *mut EGLAttrib) -> EGLBoolean;
+
+    pub fn eglCreateImage(dpy: EGLDisplay, ctx: EGLContext, target: EGLenum,
+                          buffer: EGLClientBuffer,
+                          attrib_list: *const EGLAttrib) -> EGLImage;
+
+    pub fn eglDestroyImage(dpy: EGLDisplay, image: EGLImage) -> EGLBoolean;
+
+    pub fn eglGetPlatformDisplay(platform: EGLenum,
+                                 native_display: *mut c_void,
+                                 attrib_list: *const EGLAttrib) -> EGLDisplay;
+
+    pub fn eglCreatePlatformWindowSurface(dpy: EGLDisplay, config: EGLConfig,
+                                          native_window: *mut c_void,
+                                          attrib_list: *const EGLAttrib) -> EGLSurface;
+
+    pub fn eglCreatePlatformPixmapSurface(dpy: EGLDisplay, config: EGLConfig,
+                                          native_pixmap: *mut c_void,
+                                          attrib_list: *const EGLAttrib) -> EGLSurface;
+
+    pub fn eglWaitSync(dpy: EGLDisplay, sync: EGLSync, flags: EGLint) -> EGLBoolean;
 }

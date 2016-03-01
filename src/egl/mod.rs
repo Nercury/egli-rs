@@ -61,6 +61,11 @@ pub type EGLenum              = c_uint;
 pub type EGLint               = khronos::khronos_int32_t;
 pub type EGLNativeDisplayType = *mut c_void;
 pub type EGLSurface           = *mut c_void;
+// EGL 1.5
+pub type EGLSync              = *mut c_void;
+pub type EGLAttrib            = khronos::khronos_intptr_t;
+pub type EGLTime              = khronos::khronos_utime_nanoseconds_t;
+pub type EGLImage             = *mut c_void;
 
 // -------------------------------------------------------------------------------------------------
 // ANDROID TYPES
@@ -251,6 +256,52 @@ pub const EGL_COLORSPACE_sRGB:     EGLint = EGL_VG_COLORSPACE_sRGB;
 pub const EGL_COLORSPACE_LINEAR:   EGLint = EGL_VG_COLORSPACE_LINEAR;
 pub const EGL_ALPHA_FORMAT_NONPRE: EGLint = EGL_VG_ALPHA_FORMAT_NONPRE;
 pub const EGL_ALPHA_FORMAT_PRE:    EGLint = EGL_VG_ALPHA_FORMAT_PRE;
+
+// EGL 1.5
+
+pub const EGL_CONTEXT_MAJOR_VERSION: EGLint        = 0x3098;
+pub const EGL_CONTEXT_MINOR_VERSION: EGLint        = 0x30FB;
+pub const EGL_CONTEXT_OPENGL_PROFILE_MASK: EGLint  = 0x30FD;
+pub const EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY: EGLint = 0x31BD;
+pub const EGL_NO_RESET_NOTIFICATION: EGLint        = 0x31BE;
+pub const EGL_LOSE_CONTEXT_ON_RESET: EGLint        = 0x31BF;
+pub const EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT: EGLint = 0x00000001;
+pub const EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT: EGLint = 0x00000002;
+pub const EGL_CONTEXT_OPENGL_DEBUG: EGLint         = 0x31B0;
+pub const EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE: EGLint = 0x31B1;
+pub const EGL_CONTEXT_OPENGL_ROBUST_ACCESS: EGLint = 0x31B2;
+pub const EGL_OPENGL_ES3_BIT: EGLint = 0x00000040;
+pub const EGL_CL_EVENT_HANDLE: EGLint = 0x309C;
+pub const EGL_SYNC_CL_EVENT: EGLint = 0x30FE;
+pub const EGL_SYNC_CL_EVENT_COMPLETE: EGLint = 0x30FF;
+pub const EGL_SYNC_PRIOR_COMMANDS_COMPLETE: EGLint = 0x30F0;
+pub const EGL_SYNC_TYPE: EGLint = 0x30F7;
+pub const EGL_SYNC_STATUS: EGLint = 0x30F1;
+pub const EGL_SYNC_CONDITION: EGLint = 0x30F8;
+pub const EGL_SIGNALED: EGLint = 0x30F2;
+pub const EGL_UNSIGNALED: EGLint = 0x30F3;
+pub const EGL_SYNC_FLUSH_COMMANDS_BIT: EGLint = 0x0001;
+pub const EGL_FOREVER: u64 = 0xFFFFFFFFFFFFFFFF;
+pub const EGL_TIMEOUT_EXPIRED: EGLint = 0x30F5;
+pub const EGL_CONDITION_SATISFIED: EGLint = 0x30F6;
+pub const EGL_NO_SYNC: EGLSync = 0 as EGLSync;
+pub const EGL_SYNC_FENCE: EGLint = 0x30F9;
+pub const EGL_GL_COLORSPACE: EGLint = 0x309D;
+pub const EGL_GL_COLORSPACE_SRGB: EGLint = 0x3089;
+pub const EGL_GL_COLORSPACE_LINEAR: EGLint = 0x308A;
+pub const EGL_GL_RENDERBUFFER: EGLint = 0x30B9;
+pub const EGL_GL_TEXTURE_2D: EGLint = 0x30B1;
+pub const EGL_GL_TEXTURE_LEVEL: EGLint = 0x30BC;
+pub const EGL_GL_TEXTURE_3D: EGLint = 0x30B2;
+pub const EGL_GL_TEXTURE_ZOFFSET: EGLint = 0x30BD;
+pub const EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_X: EGLint = 0x30B3;
+pub const EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_X: EGLint = 0x30B4;
+pub const EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Y: EGLint = 0x30B5;
+pub const EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Y: EGLint = 0x30B6;
+pub const EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Z: EGLint = 0x30B7;
+pub const EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Z: EGLint = 0x30B8;
+pub const EGL_IMAGE_PRESERVED: EGLint = 0x30D2;
+pub const EGL_NO_IMAGE: EGLImage = 0 as EGLImage;
 
 // -------------------------------------------------------------------------------------------------
 // FUNCTIONS

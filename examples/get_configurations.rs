@@ -4,12 +4,26 @@ use egli::Display;
 use egli::renderable;
 
 fn main() {
+    println!("Supported EGL extensions: {}", egli::query_extensions()
+        .expect("failed to query EGL extensions"));
+
     let display = Display::from_default_display()
         .expect("failed to get EGL display");
 
-    let egl_version = display.initialize_and_get_version()
-        .expect("failed to initialize EGL");
-    println!("Using EGL {}", egl_version);
+    println!("Using EGL {}", display.initialize_and_get_version().expect("failed to initialize"));
+
+    println!(
+        "\
+        Supported APIs: {apis}\n\
+        Display extensions: {extensions}\n\
+        EGL version: {version}\n\
+        Vendor: {vendor}\
+        ",
+        apis = display.query_client_apis().expect("failed to query display"),
+        extensions = display.query_extensions().expect("failed to query display"),
+        version = display.query_version().expect("failed to query display"),
+        vendor = display.query_vendor().expect("failed to query display"),
+    );
 
     let configs = display.config_filter()
         .with_blue_size(8)
@@ -20,5 +34,6 @@ fn main() {
         .choose_configs()
         .expect("failed to get configurations");
 
-    println!("There are {:#?} display configurations", configs);
+    println!("There are {} display configurations", configs.len());
+    println!("First found configuration mathing parameters is: {:#?}", configs.first());
 }

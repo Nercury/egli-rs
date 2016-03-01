@@ -26,6 +26,28 @@ pub use version::Version;
 
 use std::mem;
 
+/// Get supported EGL client version __EGL 1.5__.
+///
+/// Returns a version or release number.
+/// The EGL_VERSION string is laid out as follows:
+///
+/// `major_version.minor_version space vendor_specific_info`
+///
+/// Both the major and minor portions of the version number are numeric.
+/// Their values must match the major and minor values returned by `Display::initialize`.
+pub fn query_version() -> error::Result<&'static str> {
+    let cstr = try!(egl::query_string(egl::EGL_NO_DISPLAY, egl::EGL_VERSION));
+    Ok(try!(cstr.to_str()))
+}
+
+/// Get all supported client extensions.
+///
+/// Returns a space separated list of supported extensions.
+pub fn query_extensions() -> error::Result<&'static str> {
+    let cstr = try!(egl::query_string(egl::EGL_NO_DISPLAY, egl::EGL_EXTENSIONS));
+    Ok(try!(cstr.to_str()))
+}
+
 #[repr(i32)]
 #[derive(Copy, Clone, Debug)]
 pub enum ColorBufferType {
@@ -76,6 +98,8 @@ pub mod renderable {
             const OPENGL_ES    = 0x0001,
             /// EGL_OPENGL_ES2_BIT
             const OPENGL_ES2   = 0x0004,
+            /// EGL_OPENGL_ES3_BIT
+            const OPENGL_ES3   = 0x00000040,
             /// EGL_OPENVG_BIT
             const OPENVG       = 0x0002,
         }

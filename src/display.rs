@@ -95,6 +95,49 @@ impl Display {
         Ok(())
     }
 
+    /// Query EGL_CLIENT_APIS.
+    ///
+    /// Returns a string describing which client rendering APIs are supported.
+    /// The string contains a space-separate list of API names. The list must
+    /// include at least one of OpenGL, OpenGL_ES, or OpenVG.
+    /// These strings correspond respectively to values EGL_OPENGL_API, EGL_OPENGL_ES_API, and
+    /// EGL_OPENVG_API of the eglBindAPI, api argument.
+    pub fn query_client_apis(&self) -> Result<&'static str> {
+        let cstr = try!(egl::query_string(self.handle, egl::EGL_CLIENT_APIS));
+        Ok(try!(cstr.to_str()))
+    }
+
+    /// Query EGL_VENDOR.
+    ///
+    /// The vendor-specific information is optional; if present, its format
+    /// and contents are implementation specific.
+    pub fn query_vendor(&self) -> Result<&'static str> {
+        let cstr = try!(egl::query_string(self.handle, egl::EGL_VENDOR));
+        Ok(try!(cstr.to_str()))
+    }
+
+    /// Get supported EGL version for this display.
+    ///
+    /// Returns a version or release number.
+    /// The EGL_VERSION string is laid out as follows:
+    ///
+    /// `major_version.minor_version space vendor_specific_info`
+    ///
+    /// Both the major and minor portions of the version number are numeric.
+    /// Their values must match the major and minor values returned by initialize.
+    pub fn query_version(&self) -> Result<&'static str> {
+        let cstr = try!(egl::query_string(self.handle, egl::EGL_VERSION));
+        Ok(try!(cstr.to_str()))
+    }
+
+    /// Get the set of display extensions supported by this display.
+    ///
+    /// Returns a space separated list of supported extensions.
+    pub fn query_extensions(&self) -> Result<&'static str> {
+        let cstr = try!(egl::query_string(self.handle, egl::EGL_EXTENSIONS));
+        Ok(try!(cstr.to_str()))
+    }
+
     /// Get all possible display configurations.
     ///
     /// Internally, this calls `eglGetConfigs` twice: to get total config count,
