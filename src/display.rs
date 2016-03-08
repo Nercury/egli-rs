@@ -7,7 +7,7 @@ use {
     ConfigFilterRef
 };
 
-/// [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization) wrapper for
+/// `[EGL 1.0]` [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization) wrapper for
 /// EGLDisplay.
 ///
 /// When dropped, frees up any associated surface and context using
@@ -42,7 +42,7 @@ impl Into<egl::EGLDisplay> for Display {
 }
 
 impl Display {
-    /// Create a `Display` from an EGL display connection.
+    /// `[EGL 1.0]` Create a `Display` from an EGL display connection.
     ///
     /// On success, returns a `Display` value that will clean up resources when terminated.
     ///
@@ -63,7 +63,7 @@ impl Display {
         }
     }
 
-    /// Creates a `Display` from the default display.
+    /// `[EGL 1.0]` Creates a `Display` from the default display.
     ///
     /// This is a convenience wrapper that calls `Display::from_display_id` with
     /// `egl::EGL_DEFAULT_DISPLAY` option.
@@ -71,7 +71,7 @@ impl Display {
         Display::from_display_id(egl::EGL_DEFAULT_DISPLAY)
     }
 
-    /// Initialize this EGL display connection and return EGL version.
+    /// `[EGL 1.0]` Initialize this EGL display connection and return EGL version.
     ///
     /// `eglInitialize` initializes the EGL display connection obtained with `eglGetDisplay`.
     /// Initializing an already initialized EGL display connection has no effect besides
@@ -86,7 +86,7 @@ impl Display {
         })
     }
 
-    /// Initialize this EGL display connection.
+    /// `[EGL 1.0]` Initialize this EGL display connection.
     ///
     /// `eglInitialize` initializes the EGL display connection obtained with `eglGetDisplay`.
     /// Initializing an already initialized EGL display connection has no effect.
@@ -95,7 +95,7 @@ impl Display {
         Ok(())
     }
 
-    /// Query EGL_CLIENT_APIS.
+    /// `[EGL 1.2]` Query EGL_CLIENT_APIS.
     ///
     /// Returns a string describing which client rendering APIs are supported.
     /// The string contains a space-separate list of API names. The list must
@@ -107,7 +107,7 @@ impl Display {
         Ok(try!(cstr.to_str()))
     }
 
-    /// Query EGL_VENDOR.
+    /// `[EGL 1.0]` Query EGL_VENDOR.
     ///
     /// The vendor-specific information is optional; if present, its format
     /// and contents are implementation specific.
@@ -116,7 +116,7 @@ impl Display {
         Ok(try!(cstr.to_str()))
     }
 
-    /// Get supported EGL version for this display.
+    /// `[EGL 1.0]` Get supported EGL version for this display.
     ///
     /// Returns a version or release number.
     /// The EGL_VERSION string is laid out as follows:
@@ -130,7 +130,7 @@ impl Display {
         Ok(try!(cstr.to_str()))
     }
 
-    /// Get the set of display extensions supported by this display.
+    /// `[EGL 1.0]` Get the set of display extensions supported by this display.
     ///
     /// Returns a space separated list of supported extensions.
     pub fn query_extensions(&self) -> Result<&'static str> {
@@ -138,7 +138,7 @@ impl Display {
         Ok(try!(cstr.to_str()))
     }
 
-    /// Get all possible display configurations.
+    /// `[EGL 1.0]` Get all possible display configurations.
     ///
     /// Internally, this calls `eglGetConfigs` twice: to get total config count,
     /// and to fill allocated memory with config handles.
@@ -155,7 +155,7 @@ impl Display {
             .collect())
     }
 
-    /// Creates a new config filter for this display for safe
+    /// `[EGL 1.0]` Creates a new config filter for this display for safe
     /// invocation of `eglChooseConfig`.
     ///
     /// See documentation of `ConfigFilterRef` for the list of all available filter
@@ -175,6 +175,13 @@ impl Display {
     /// ```
     pub fn config_filter(&self) -> ConfigFilterRef {
         ConfigFilterRef::from_native(self.handle)
+    }
+
+    /// `[EGL 1.0]` Create a new EGL window surface.
+    pub fn create_window_surface(&self, config: FrameBufferConfigRef, window: egl::EGLNativeWindowType) -> Result<()> {
+        let attribs: [i32; 1] = [egl::EGL_NONE];
+        try!(egl::create_window_surface(self.handle, config.handle(), window, &attribs));
+        Ok(())
     }
 
     /// Run an action with inner handle as parameter.

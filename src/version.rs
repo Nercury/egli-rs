@@ -1,6 +1,6 @@
 use std::fmt;
 
-/// EGL version.
+/// `[EGL 1.0]` EGL version.
 #[derive(Copy, Clone, Debug)]
 pub struct Version {
     pub major: i32,

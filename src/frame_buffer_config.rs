@@ -5,7 +5,7 @@ use { ColorBufferType, ConfigCaveat, TransparentType };
 use renderable;
 use surface;
 
-/// Reference to frame buffer configuration.
+/// `[EGL 1.0]` Reference to frame buffer configuration.
 ///
 /// This is not a RAII object, so nothing will be cleaned up when it is dropped.
 ///
@@ -23,6 +23,11 @@ impl FrameBufferConfigRef {
             display_handle: display_id,
             config_handle: config_handle
         }
+    }
+
+    /// Get native config handle.
+    pub fn handle(&self) -> egl::EGLConfig {
+        self.config_handle
     }
 
     // Some methods bellow might not have correct return type

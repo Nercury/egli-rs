@@ -5,7 +5,7 @@ use surface;
 use error::Result;
 use { FrameBufferConfigRef, ColorBufferType, ConfigCaveat, TransparentType };
 
-/// Configuration filter builder.
+/// `[EGL 1.0]` Configuration filter builder.
 pub struct ConfigFilterRef {
     handle: EGLDisplay,
     alpha_mask_size: Option<[EGLint; 2]>,

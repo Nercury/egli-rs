@@ -16,6 +16,7 @@ pub enum EglCallError {
     MakeCurrent,
     DestroyContext,
     CreateWindowSurface,
+    CreatePlatformWindowSurface,
     CreatePixmapSurface,
     CreatePbufferSurface,
     CreatePbufferFromClientBuffer,

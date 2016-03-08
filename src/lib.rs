@@ -26,7 +26,7 @@ pub use version::Version;
 
 use std::mem;
 
-/// Get supported EGL client version __EGL 1.5__.
+/// `[EGL 1.5]` Get supported EGL client version.
 ///
 /// Returns a version or release number.
 /// The EGL_VERSION string is laid out as follows:
@@ -40,7 +40,7 @@ pub fn query_version() -> error::Result<&'static str> {
     Ok(try!(cstr.to_str()))
 }
 
-/// Get all supported client extensions.
+/// `[EGL 1.0]` Get all supported client extensions.
 ///
 /// Returns a space separated list of supported extensions.
 pub fn query_extensions() -> error::Result<&'static str> {
