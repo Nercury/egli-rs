@@ -4,6 +4,9 @@ use egli::Display;
 use egli::renderable;
 
 fn main() {
+    println!("This example requires EGL library installed.");
+    println!("On Ubuntu it is named `libegl1-mesa-dev`.");
+
     println!("Supported EGL extensions: {}", egli::query_extensions()
         .expect("failed to query EGL extensions"));
 

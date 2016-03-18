@@ -5,7 +5,7 @@
 use libc::{
     c_char,
     c_void
-};
+}; 
 
 use egl::{
     EGLBoolean,
