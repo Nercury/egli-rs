@@ -11,3 +11,6 @@ version = "2.3"
 [dependencies]
 libc = "0.2"
 bitflags = "0.5"
+
+[features]
+"egl-1.5" = []

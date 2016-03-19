@@ -62,9 +62,13 @@ pub type EGLint               = khronos::khronos_int32_t;
 pub type EGLNativeDisplayType = *mut c_void;
 pub type EGLSurface           = *mut c_void;
 // EGL 1.5
+#[cfg(feature = "egl-1.5")]
 pub type EGLSync              = *mut c_void;
+#[cfg(feature = "egl-1.5")]
 pub type EGLAttrib            = khronos::khronos_intptr_t;
+#[cfg(feature = "egl-1.5")]
 pub type EGLTime              = khronos::khronos_utime_nanoseconds_t;
+#[cfg(feature = "egl-1.5")]
 pub type EGLImage             = *mut c_void;
 
 // -------------------------------------------------------------------------------------------------
@@ -258,49 +262,91 @@ pub const EGL_ALPHA_FORMAT_NONPRE: EGLint = EGL_VG_ALPHA_FORMAT_NONPRE;
 pub const EGL_ALPHA_FORMAT_PRE:    EGLint = EGL_VG_ALPHA_FORMAT_PRE;
 
 // EGL 1.5
-
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_MAJOR_VERSION: EGLint        = 0x3098;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_MINOR_VERSION: EGLint        = 0x30FB;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_OPENGL_PROFILE_MASK: EGLint  = 0x30FD;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_OPENGL_RESET_NOTIFICATION_STRATEGY: EGLint = 0x31BD;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_NO_RESET_NOTIFICATION: EGLint        = 0x31BE;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_LOSE_CONTEXT_ON_RESET: EGLint        = 0x31BF;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT: EGLint = 0x00000001;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT: EGLint = 0x00000002;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_OPENGL_DEBUG: EGLint         = 0x31B0;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_OPENGL_FORWARD_COMPATIBLE: EGLint = 0x31B1;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONTEXT_OPENGL_ROBUST_ACCESS: EGLint = 0x31B2;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_OPENGL_ES3_BIT: EGLint = 0x00000040;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CL_EVENT_HANDLE: EGLint = 0x309C;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_CL_EVENT: EGLint = 0x30FE;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_CL_EVENT_COMPLETE: EGLint = 0x30FF;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_PRIOR_COMMANDS_COMPLETE: EGLint = 0x30F0;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_TYPE: EGLint = 0x30F7;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_STATUS: EGLint = 0x30F1;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_CONDITION: EGLint = 0x30F8;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SIGNALED: EGLint = 0x30F2;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_UNSIGNALED: EGLint = 0x30F3;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_FLUSH_COMMANDS_BIT: EGLint = 0x0001;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_FOREVER: u64 = 0xFFFFFFFFFFFFFFFF;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_TIMEOUT_EXPIRED: EGLint = 0x30F5;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_CONDITION_SATISFIED: EGLint = 0x30F6;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_NO_SYNC: EGLSync = 0 as EGLSync;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_SYNC_FENCE: EGLint = 0x30F9;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_COLORSPACE: EGLint = 0x309D;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_COLORSPACE_SRGB: EGLint = 0x3089;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_COLORSPACE_LINEAR: EGLint = 0x308A;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_RENDERBUFFER: EGLint = 0x30B9;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_2D: EGLint = 0x30B1;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_LEVEL: EGLint = 0x30BC;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_3D: EGLint = 0x30B2;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_ZOFFSET: EGLint = 0x30BD;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_X: EGLint = 0x30B3;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_X: EGLint = 0x30B4;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Y: EGLint = 0x30B5;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Y: EGLint = 0x30B6;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_CUBE_MAP_POSITIVE_Z: EGLint = 0x30B7;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_GL_TEXTURE_CUBE_MAP_NEGATIVE_Z: EGLint = 0x30B8;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_IMAGE_PRESERVED: EGLint = 0x30D2;
+#[cfg(feature = "egl-1.5")]
 pub const EGL_NO_IMAGE: EGLImage = 0 as EGLImage;
 
 // -------------------------------------------------------------------------------------------------
@@ -477,6 +523,7 @@ pub fn create_window_surface(display: EGLDisplay, config: EGLConfig,
 }
 
 /// `[EGL 1.5]` Create a new EGL window surface.
+#[cfg(feature = "egl-1.5")]
 pub fn create_platform_window_surface(display: EGLDisplay, config: EGLConfig,
                                       native_window: *mut c_void,
                                       attrib_list: &[EGLAttrib]) -> EglCallResult<EGLSurface> {

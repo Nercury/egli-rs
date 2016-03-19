@@ -35,6 +35,7 @@ use std::mem;
 ///
 /// Both the major and minor portions of the version number are numeric.
 /// Their values must match the major and minor values returned by `Display::initialize`.
+#[cfg(feature = "egl-1.5")]
 pub fn query_version() -> error::Result<&'static str> {
     let cstr = try!(egl::query_string(egl::EGL_NO_DISPLAY, egl::EGL_VERSION));
     Ok(try!(cstr.to_str()))
