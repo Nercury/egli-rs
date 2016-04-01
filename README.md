@@ -63,7 +63,8 @@ let display = egli::Display::from_default_display()
 
 let display_handle = display.forget();
 
-egl::terminate(display_handle); // display is terminated
+egl::terminate(display_handle) // display is terminated
+    .expect("failed to terminate display"); 
 
 // the display's drop won't run because the forget() was called
 ```
