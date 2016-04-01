@@ -7,13 +7,13 @@ fn main() {
     println!("This example requires EGL library installed.");
     println!("On Ubuntu it is named `libegl1-mesa-dev`.");
 
-    println!("Supported EGL extensions: {}", egli::query_extensions()
-        .expect("failed to query EGL extensions"));
+    println!("Supported EGL extensions: {}",
+             egli::query_extensions().expect("failed to query EGL extensions"));
 
-    let display = Display::from_default_display()
-        .expect("failed to get EGL display");
+    let display = Display::from_default_display().expect("failed to get EGL display");
 
-    println!("Using EGL {}", display.initialize_and_get_version().expect("failed to initialize"));
+    println!("Using EGL {}",
+             display.initialize_and_get_version().expect("failed to initialize"));
 
     println!(
         "\
@@ -29,14 +29,15 @@ fn main() {
     );
 
     let configs = display.config_filter()
-        .with_blue_size(8)
-        .with_alpha_size(8)
-        .with_buffer_size(32)
-        .with_depth_size(32)
-        .with_conformant(renderable::OPENGL_ES2)
-        .choose_configs()
-        .expect("failed to get configurations");
+                         .with_blue_size(8)
+                         .with_alpha_size(8)
+                         .with_buffer_size(32)
+                         .with_depth_size(32)
+                         .with_conformant(renderable::OPENGL_ES2)
+                         .choose_configs()
+                         .expect("failed to get configurations");
 
     println!("There are {} display configurations", configs.len());
-    println!("First found configuration mathing parameters is: {:#?}", configs.first());
+    println!("First found configuration mathing parameters is: {:#?}",
+             configs.first());
 }

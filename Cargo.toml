@@ -8,9 +8,13 @@ license = "MIT OR Apache-2.0"
 features = ["xlib"]
 version = "2.3"
 
+[dev-dependencies.gl]
+version = "*"
+
 [dependencies]
 libc = "0.2"
 bitflags = "0.5"
+log = "0.3"
 
 [features]
 "egl-1.5" = []

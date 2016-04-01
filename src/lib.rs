@@ -8,18 +8,25 @@
 //! # EGLI - Higher-level EGL Interface
 
 extern crate libc;
-#[macro_use] extern crate bitflags;
+#[macro_use]
+extern crate bitflags;
+#[macro_use]
+extern crate log;
 
 pub mod egl;
 pub mod ffi;
 pub mod error;
 
 mod display;
+mod context;
+mod window_surface;
 mod config_filter;
 mod frame_buffer_config;
 mod version;
 
-pub use display::Display;
+pub use display::{Display, ContextClientVersion};
+pub use context::Context;
+pub use window_surface::Surface;
 pub use config_filter::ConfigFilterRef;
 pub use frame_buffer_config::FrameBufferConfigRef;
 pub use version::Version;

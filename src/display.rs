@@ -1,11 +1,12 @@
 use egl;
 use std::ptr;
 use error::Result;
-use {
-    Version,
-    FrameBufferConfigRef,
-    ConfigFilterRef
-};
+use {Surface, Context, Version, FrameBufferConfigRef, ConfigFilterRef};
+
+pub enum ContextClientVersion {
+    OpenGlEs1,
+    OpenGlEs2,
+}
 
 /// `[EGL 1.0]` [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization) wrapper for
 /// EGLDisplay.
@@ -29,7 +30,8 @@ impl Drop for Display {
             // Ignoring errors here might be sub-optimal for some API uses.
             // In that case, use EGL directly, or handle termination by getting handle from
             // `forget` method.
-            let _ = egl::make_current(self.handle, egl::EGL_NO_SURFACE, egl::EGL_NO_SURFACE, egl::EGL_NO_CONTEXT);
+            let _ = self.make_not_current();
+            trace!("terminate display");
             let _ = egl::terminate(self.handle);
         }
     }
@@ -55,10 +57,12 @@ impl Display {
     /// default display.
     pub fn from_display_id(display_id: egl::EGLNativeDisplayType) -> Result<Display> {
         match egl::get_display(display_id) {
-            Ok(handle) => Ok(Display {
-                terminated: false,
-                handle: handle,
-            }),
+            Ok(handle) => {
+                Ok(Display {
+                    terminated: false,
+                    handle: handle,
+                })
+            }
             Err(e) => Err(e.into()),
         }
     }
@@ -78,6 +82,8 @@ impl Display {
     /// returning the version numbers.
     pub fn initialize_and_get_version(&self) -> Result<Version> {
         let (mut major, mut minor) = (0, 0);
+
+        trace!("initialize display");
         try!(egl::initialize_and_get_version(self.handle, &mut major, &mut minor));
 
         Ok(Version {
@@ -91,7 +97,10 @@ impl Display {
     /// `eglInitialize` initializes the EGL display connection obtained with `eglGetDisplay`.
     /// Initializing an already initialized EGL display connection has no effect.
     pub fn initialize(&self) -> Result<()> {
+
+        trace!("initialize display");
         try!(egl::initialize(self.handle));
+
         Ok(())
     }
 
@@ -150,9 +159,10 @@ impl Display {
         let mut configs: Vec<egl::EGLConfig> = vec![ptr::null_mut(); count];
         let returned_count = try!(egl::get_configs(self.handle, &mut configs)) as usize;
 
-        Ok(configs[..returned_count].iter()
-            .map(|c| FrameBufferConfigRef::from_native(self.handle, *c))
-            .collect())
+        Ok(configs[..returned_count]
+               .iter()
+               .map(|c| FrameBufferConfigRef::from_native(self.handle, *c))
+               .collect())
     }
 
     /// `[EGL 1.0]` Creates a new config filter for this display for safe
@@ -178,14 +188,73 @@ impl Display {
     }
 
     /// `[EGL 1.0]` Create a new EGL window surface.
-    pub fn create_window_surface(&self, config: FrameBufferConfigRef, window: egl::EGLNativeWindowType) -> Result<()> {
-        let attribs: [i32; 1] = [egl::EGL_NONE];
-        try!(egl::create_window_surface(self.handle, config.handle(), window, &attribs));
+    pub fn create_window_surface(&self,
+                                 config: FrameBufferConfigRef,
+                                 window: egl::EGLNativeWindowType)
+                                 -> Result<Surface> {
+
+        trace!("create window surface");
+        let maybe_handle = egl::create_window_surface(self.handle, config.handle(), window);
+
+        Ok(Surface::from_handle(self.handle, try!(maybe_handle)))
+    }
+
+    /// `[EGL 1.0]` Create a new EGL rendering context.
+    pub fn create_context(&self, config: FrameBufferConfigRef) -> Result<Context> {
+
+        trace!("create context");
+        let maybe_handle = egl::create_context(self.handle, config.handle());
+
+        Ok(Context::from_handle(self.handle, try!(maybe_handle)))
+    }
+
+    /// `[EGL 1.3]` Create a new EGL rendering context.
+    pub fn create_context_with_client_version(&self,
+                                              config: FrameBufferConfigRef,
+                                              client_version: ContextClientVersion)
+                                              -> Result<Context> {
+
+        let attribs = [egl::EGL_CONTEXT_CLIENT_VERSION,
+                       match client_version {
+                           ContextClientVersion::OpenGlEs1 => 1,
+                           ContextClientVersion::OpenGlEs2 => 2,
+                       },
+                       egl::EGL_NONE];
+
+        trace!("create context");
+        let maybe_handle = egl::create_context_with_attribs(self.handle,
+                                                            config.handle(),
+                                                            ptr::null_mut(),
+                                                            &attribs);
+
+        Ok(Context::from_handle(self.handle, try!(maybe_handle)))
+    }
+
+    /// `[EGL 1.0]` Attach an EGL rendering context to EGL surfaces.
+    pub fn make_current(&self, draw: &Surface, read: &Surface, context: &Context) -> Result<()> {
+        try!(egl::make_current(self.handle, draw.handle(), read.handle(), context.handle()));
+        Ok(())
+    }
+
+    /// `[EGL 1.0]` Detatch an EGL rendering context from EGL surfaces and contexts.
+    pub fn make_not_current(&self) -> Result<()> {
+        try!(egl::make_current(self.handle,
+                               egl::EGL_NO_SURFACE,
+                               egl::EGL_NO_SURFACE,
+                               egl::EGL_NO_CONTEXT));
+        Ok(())
+    }
+
+    /// `[EGL 1.0]` Post EGL surface color buffer to a native window.
+    pub fn swap_buffers(&self, surface: &Surface) -> Result<()> {
+        try!(egl::swap_buffers(self.handle, surface.handle()));
         Ok(())
     }
 
     /// Run an action with inner handle as parameter.
-    pub fn with_handle<F, R>(&self, action: F) -> R where F: FnOnce(egl::EGLDisplay) -> R {
+    pub fn with_handle<F, R>(&self, action: F) -> R
+        where F: FnOnce(egl::EGLDisplay) -> R
+    {
         action(self.handle)
     }
 

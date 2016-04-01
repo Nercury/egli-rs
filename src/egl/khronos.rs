@@ -18,34 +18,26 @@
 
 #![allow(non_camel_case_types)]
 
-use libc::{ c_float,
-            int8_t,
-            int16_t,
-            int32_t,
-            int64_t,
-            uint8_t,
-            uint16_t,
-            uint32_t,
-            uint64_t };
+use libc::{c_float, int8_t, int16_t, int32_t, int64_t, uint8_t, uint16_t, uint32_t, uint64_t};
 
 // -------------------------------------------------------------------------------------------------
 // TYPES
 // -------------------------------------------------------------------------------------------------
 
-pub type khronos_float_t  = c_float;
-pub type khronos_int8_t   = int8_t;
-pub type khronos_uint8_t  = uint8_t;
-pub type khronos_int16_t  = int16_t;
+pub type khronos_float_t = c_float;
+pub type khronos_int8_t = int8_t;
+pub type khronos_uint8_t = uint8_t;
+pub type khronos_int16_t = int16_t;
 pub type khronos_uint16_t = uint16_t;
-pub type khronos_int32_t  = int32_t;
+pub type khronos_int32_t = int32_t;
 pub type khronos_uint32_t = uint32_t;
-pub type khronos_int64_t  = int64_t;
+pub type khronos_int64_t = int64_t;
 pub type khronos_uint64_t = uint64_t;
 
-pub type khronos_intptr_t  = int32_t;
+pub type khronos_intptr_t = int32_t;
 pub type khronos_uintptr_t = uint32_t;
-pub type khronos_ssize_t   = int32_t;
-pub type khronos_usize_t   = uint32_t;
+pub type khronos_ssize_t = int32_t;
+pub type khronos_usize_t = uint32_t;
 
 pub type khronos_stime_nanoseconds_t = khronos_int64_t;
 pub type khronos_utime_nanoseconds_t = khronos_uint64_t;
