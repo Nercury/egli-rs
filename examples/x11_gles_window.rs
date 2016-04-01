@@ -7,7 +7,7 @@ use std::mem;
 use egli::{Display, surface, renderable, ContextClientVersion};
 
 fn main() {
-    println!("This example requires EGL and xlib installed.");
+    println!("This example requires GL, EGL and xlib installed.");
     println!("On Ubuntu they are named `libegl1-mesa-dev`, `libx11-dev`.");
 
     let display_and_window = X11DisplayAndWindow::new("Hello EGL", 640, 480);
@@ -18,22 +18,23 @@ fn main() {
     println!("Using EGL {}",
              egl_display.initialize_and_get_version().expect("failed to initialize"));
 
-    let config = egl_display.config_filter()
-                            .with_red_size(8)
-                            .with_green_size(8)
-                            .with_blue_size(8)
-                            .with_depth_size(24)
-                            .with_surface_type(surface::WINDOW)
-                            .with_renderable_type(renderable::OPENGL_ES2)
-                            .choose_configs()
-                            .expect("failed to get configurations")
-                            .first()
-                            .expect("no compatible EGL configuration was found")
-                            .clone();
+    let configs = egl_display.config_filter()
+                             .with_red_size(8)
+                             .with_green_size(8)
+                             .with_blue_size(8)
+                             .with_depth_size(24)
+                             .with_surface_type(surface::WINDOW)
+                             .with_renderable_type(renderable::OPENGL_ES2)
+                             .choose_configs()
+                             .expect("failed to get configurations");
 
-    let surface = egl_display.create_window_surface(config, display_and_window.window as *mut _)
+    let first_config = *configs.first()
+                               .expect("no compatible EGL configuration was found");
+
+    let surface = egl_display.create_window_surface(first_config,
+                                                    display_and_window.window as *mut _)
                              .expect("failed to create window surface");
-    let context = egl_display.create_context_with_client_version(config,
+    let context = egl_display.create_context_with_client_version(first_config,
                                                                  ContextClientVersion::OpenGlEs2)
                              .expect("failed to create OpenGL ES2 context");
 
@@ -43,8 +44,6 @@ fn main() {
     gl::load_with(|s| unsafe { mem::transmute(egli::egl::get_proc_address(s)) });
 
     display_and_window.wait_for_close(move || {
-        let _ = context;
-
         unsafe {
             gl::ClearColor(0.0, 0.0, 1.0, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
