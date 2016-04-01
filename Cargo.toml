@@ -19,4 +19,4 @@ bitflags = "0.5"
 log = "0.3"
 
 [features]
-"egl-1.5" = []
+egl_1_5 = []

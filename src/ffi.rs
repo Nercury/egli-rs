@@ -8,7 +8,7 @@ use libc::{c_char, c_void};
 use egl::{EGLBoolean, EGLClientBuffer, EGLConfig, EGLContext, EGLDisplay, EGLenum, EGLint,
           EGLNativeDisplayType, EGLNativePixmapType, EGLNativeWindowType, EGLSurface};
 
-#[cfg(feature = "egl-1.5")]
+#[cfg(feature = "egl_1_5")]
 use egl::{EGLSync, EGLAttrib, EGLImage, EGLTime};
 
 extern "C" {
@@ -140,30 +140,30 @@ extern "C" {
 
     // EGL 1.5
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglCreateSync(dpy: EGLDisplay,
                          _type: EGLenum,
                          attrib_list: *const EGLAttrib)
                          -> EGLSync;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglDestroySync(dpy: EGLDisplay, sync: EGLSync) -> EGLBoolean;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglClientWaitSync(dpy: EGLDisplay,
                              sync: EGLSync,
                              flags: EGLint,
                              timeout: EGLTime)
                              -> EGLint;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglGetSyncAttrib(dpy: EGLDisplay,
                             sync: EGLSync,
                             attribute: EGLint,
                             value: *mut EGLAttrib)
                             -> EGLBoolean;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglCreateImage(dpy: EGLDisplay,
                           ctx: EGLContext,
                           target: EGLenum,
@@ -171,29 +171,29 @@ extern "C" {
                           attrib_list: *const EGLAttrib)
                           -> EGLImage;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglDestroyImage(dpy: EGLDisplay, image: EGLImage) -> EGLBoolean;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglGetPlatformDisplay(platform: EGLenum,
                                  native_display: *mut c_void,
                                  attrib_list: *const EGLAttrib)
                                  -> EGLDisplay;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglCreatePlatformWindowSurface(dpy: EGLDisplay,
                                           config: EGLConfig,
                                           native_window: *mut c_void,
                                           attrib_list: *const EGLAttrib)
                                           -> EGLSurface;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglCreatePlatformPixmapSurface(dpy: EGLDisplay,
                                           config: EGLConfig,
                                           native_pixmap: *mut c_void,
                                           attrib_list: *const EGLAttrib)
                                           -> EGLSurface;
 
-    #[cfg(feature = "egl-1.5")]
+    #[cfg(feature = "egl_1_5")]
     pub fn eglWaitSync(dpy: EGLDisplay, sync: EGLSync, flags: EGLint) -> EGLBoolean;
 }
