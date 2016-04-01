@@ -3,13 +3,15 @@ name = "egli"
 version = "0.1.0"
 authors = ["Nerijus Arlauskas <nercury@gmail.com>"]
 license = "MIT OR Apache-2.0"
+description = "EGL Interface"
+repository = "https://github.com/Nercury/egli-rs"
 
 [dev-dependencies.x11]
 features = ["xlib"]
 version = "2.3"
 
 [dev-dependencies.gl]
-version = "*"
+version = "0.6"
 
 [dependencies]
 libc = "0.2"
