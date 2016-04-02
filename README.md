@@ -1,5 +1,7 @@
 ## EGLI - EGL Interface for Rust
 
+[![Build Status](https://travis-ci.org/Nercury/egli-rs.svg?branch=master)](https://travis-ci.org/Nercury/egli-rs)
+
 ### What is EGL
 
 EGL is a window system-independent equivalent to the GLX and WGL APIs, which respectively enable OpenGL support in X and Microsoft Windows. It is an interface between Khronos rendering APIs such as OpenGL ES or OpenVG and the underlying native platform window system. It handles graphics context management, surface/buffer binding, and rendering synchronization and enables high-performance, accelerated, mixed-mode 2D and 3D rendering using other Khronos APIs.
@@ -15,6 +17,8 @@ Many libraries such as SDL already do what EGL does. Usually they are using EGL 
 - Your platform has EGL library to link to (usually it is Android/Linux, maybe Windows).
 
 ## EGLI Details
+
+Browse [documentation here](http://nercury.github.io/egli-rs/egli/index.html).
 
 EGLI has two abstraction levels.
 
@@ -80,7 +84,7 @@ let display = egli::Display::from_default_display()
 let display_handle = display.forget();
 
 egli::egl::terminate(display_handle) // display is terminated
-    .expect("failed to terminate display"); 
+    .expect("failed to terminate display");
 
 // the display's drop won't run because the forget() was called
 ```

@@ -1,10 +1,11 @@
 [package]
 name = "egli"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Nerijus Arlauskas <nercury@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "EGL Interface"
 repository = "https://github.com/Nercury/egli-rs"
+documentation = "http://nercury.github.io/egli-rs/egli/index.html"
 
 [dev-dependencies.x11]
 features = ["xlib"]
