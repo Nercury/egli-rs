@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["ConfigFilterRef","`[EGL 1.0]` Configuration filter builder."]]});

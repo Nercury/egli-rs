@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Context","`[EGL 1.0]` RAII wrapper for EGLContext."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["FrameBufferConfigRef","`[EGL 1.0]` Reference to frame buffer configuration."]]});

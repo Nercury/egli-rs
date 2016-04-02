@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Version","`[EGL 1.0]` EGL version."]]});

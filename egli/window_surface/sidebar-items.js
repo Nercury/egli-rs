@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Surface","`[EGL 1.0]` RAII wrapper for EGLSurface."]]});
