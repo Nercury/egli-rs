@@ -5,6 +5,12 @@ env:
   global:
     - CRATE=egli
 
+addons:
+  apt:
+    packages:
+    - libegl1-mesa-dev
+    - libx11-dev
+
 matrix:
   allow_failures:
     - rust: nightly
