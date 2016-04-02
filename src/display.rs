@@ -38,7 +38,6 @@ impl Drop for Display {
             // In that case, use EGL directly, or handle termination by getting handle from
             // `forget` method.
             let _ = self.make_not_current();
-            trace!("terminate display");
             let _ = egl::terminate(self.handle);
         }
     }
@@ -90,7 +89,6 @@ impl Display {
     pub fn initialize_and_get_version(&self) -> Result<Version> {
         let (mut major, mut minor) = (0, 0);
 
-        trace!("initialize display");
         try!(egl::initialize_and_get_version(self.handle, &mut major, &mut minor));
 
         Ok(Version {
@@ -105,7 +103,6 @@ impl Display {
     /// Initializing an already initialized EGL display connection has no effect.
     pub fn initialize(&self) -> Result<()> {
 
-        trace!("initialize display");
         try!(egl::initialize(self.handle));
 
         Ok(())
@@ -186,9 +183,8 @@ impl Display {
     /// let display = Display::from_default_display()
     ///                      .expect("failed to get default display");
     /// let configs = display.config_filter()
-    ///                      .with_alpha_mask_size(8)
-    ///                      .choose_configs()
-    ///                      .expect("failed to get display configs");
+    ///                      .with_red_size(8)
+    ///                      .choose_configs();
     /// ```
     pub fn config_filter(&self) -> ConfigFilterRef {
         ConfigFilterRef::from_native(self.handle)
@@ -200,7 +196,6 @@ impl Display {
                                  window: egl::EGLNativeWindowType)
                                  -> Result<Surface> {
 
-        trace!("create window surface");
         let maybe_handle = egl::create_window_surface(self.handle, config.handle(), window);
 
         Ok(Surface::from_handle(self.handle, try!(maybe_handle)))
@@ -209,7 +204,6 @@ impl Display {
     /// `[EGL 1.0]` Create a new EGL rendering context.
     pub fn create_context(&self, config: FrameBufferConfigRef) -> Result<Context> {
 
-        trace!("create context");
         let maybe_handle = egl::create_context(self.handle, config.handle());
 
         Ok(Context::from_handle(self.handle, try!(maybe_handle)))
@@ -228,7 +222,6 @@ impl Display {
                        },
                        egl::EGL_NONE];
 
-        trace!("create context");
         let maybe_handle = egl::create_context_with_attribs(self.handle,
                                                             config.handle(),
                                                             ptr::null_mut(),

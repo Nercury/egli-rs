@@ -24,7 +24,6 @@ pub struct Surface {
 impl Drop for Surface {
     fn drop(&mut self) {
         if !self.terminated {
-            trace!("destroy surface");
             let _ = egl::destroy_surface(self.display_handle, self.handle);
         }
     }

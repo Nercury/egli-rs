@@ -23,7 +23,6 @@ pub struct Context {
 impl Drop for Context {
     fn drop(&mut self) {
         if !self.terminated {
-            trace!("destroy context");
             let _ = egl::destroy_context(self.display_handle, self.handle);
         }
     }

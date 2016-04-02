@@ -4,7 +4,7 @@ extern crate libc;
 extern crate gl;
 
 use std::mem;
-use egli::{Display, surface, renderable, ContextClientVersion};
+use egli::{Display, surface, renderable};
 
 fn main() {
     println!("This example requires GL, EGL and xlib installed.");
@@ -24,7 +24,7 @@ fn main() {
                              .with_blue_size(8)
                              .with_depth_size(24)
                              .with_surface_type(surface::WINDOW)
-                             .with_renderable_type(renderable::OPENGL_ES2)
+                             .with_renderable_type(renderable::OPENGL)
                              .choose_configs()
                              .expect("failed to get configurations");
 
@@ -34,9 +34,8 @@ fn main() {
     let surface = egl_display.create_window_surface(first_config,
                                                     display_and_window.window as *mut _)
                              .expect("failed to create window surface");
-    let context = egl_display.create_context_with_client_version(first_config,
-                                                                 ContextClientVersion::OpenGlEs2)
-                             .expect("failed to create OpenGL ES2 context");
+    let context = egl_display.create_context(first_config)
+                             .expect("failed to create OpenGL context");
 
     egl_display.make_current(&surface, &surface, &context)
                .expect("make current failed");
