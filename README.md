@@ -2,27 +2,61 @@
 
 [![Build Status](https://travis-ci.org/Nercury/egli-rs.svg?branch=master)](https://travis-ci.org/Nercury/egli-rs)
 
+## At a glance
+
+```rust
+extern crate egli;
+
+use egli::{ Display, renderable };
+
+fn main() {
+    let display = Display::from_default_display()
+        .expect("failed to get EGL display");
+
+    display.initialize()
+        .expect("failed to initialize");
+
+    let configs = display.config_filter()
+                         .with_blue_size(8)
+                         .with_red_size(8)
+                         .with_green_size(8)
+                         .with_depth_size(24)
+                         .with_conformant(renderable::OPENGL_ES2)
+                         .choose_configs()
+                         .expect("failed to get configurations");
+
+    println!("There are {} display configurations", configs.len());
+    println!("First found configuration mathing parameters is: {:#?}",
+             configs.first());
+
+    // proceed to create surface & context ...
+}
+```
+
+- Browse [api reference here](http://nercury.github.io/egli-rs/egli/index.html).
+- See OpenGL [example with X11 window here](https://github.com/Nercury/egli-rs/blob/master/examples/x11_gl_window.rs).
+
 ### What is EGL
 
 EGL is a window system-independent equivalent to the GLX and WGL APIs, which respectively enable OpenGL support in X and Microsoft Windows. It is an interface between Khronos rendering APIs such as OpenGL ES or OpenVG and the underlying native platform window system. It handles graphics context management, surface/buffer binding, and rendering synchronization and enables high-performance, accelerated, mixed-mode 2D and 3D rendering using other Khronos APIs.
 
 ### Why use EGL
 
-Many libraries such as SDL already do what EGL does. Usually they are using EGL behind the scenes. So EGL makes sense if:
+Many libraries such as SDL or glutin already do what EGL does (and more). Usually they are using EGL behind the scenes. So using EGL directly only makes sense if:
 
 - You obtained window/display handle by other means.
-- You need to initialize OpenGL ES.
+- You need to initialize OpenGL context.
 - You have another OpenGL library that needs to call `get_proc_address` which EGL provides.
 - You need a way to swap buffers at the end of the scene which EGL provides.
 - Your platform has EGL library to link to (usually it is Android/Linux, maybe Windows).
 
 ## EGLI Details
 
-Browse [documentation here](http://nercury.github.io/egli-rs/egli/index.html).
+Browse [api reference here](http://nercury.github.io/egli-rs/egli/index.html).
 
 EGLI has two abstraction levels.
 
-Lower level EGL can be found in `egl` namespace.
+Lower level EGL can be found in `egli::egl` namespace.
 The higher level types are in the root `egli` namespace.
 
 ## Lower Level EGL Interface
