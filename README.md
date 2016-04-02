@@ -1,6 +1,22 @@
 ## EGLI - EGL Interface for Rust
 
-Contains two abstraction levels.
+### What is EGL
+
+EGL is a window system-independent equivalent to the GLX and WGL APIs, which respectively enable OpenGL support in X and Microsoft Windows. It is an interface between Khronos rendering APIs such as OpenGL ES or OpenVG and the underlying native platform window system. It handles graphics context management, surface/buffer binding, and rendering synchronization and enables high-performance, accelerated, mixed-mode 2D and 3D rendering using other Khronos APIs.
+
+### Why use EGL
+
+Many libraries such as SDL already do what EGL does. Usually they are using EGL behind the scenes. So EGL makes sense if:
+
+- You obtained window/display handle by other means.
+- You need to initialize OpenGL ES.
+- You have another OpenGL library that needs to call `get_proc_address` which EGL provides.
+- You need a way to swap buffers at the end of the scene which EGL provides.
+- Your platform has EGL library to link to (usually it is Android/Linux, maybe Windows).
+
+## EGLI Details
+
+EGLI has two abstraction levels.
 
 Lower level EGL can be found in `egl` namespace.
 The higher level types are in the root `egli` namespace.
@@ -24,7 +40,7 @@ In the following example, the `Display` will be destroyed last, at the end of
 scope:
 
 ```rust
-let display = Display::from_default_display()
+let display = egli::Display::from_default_display()
                       .expect("failed to get EGL display");
 let surface = display.create_window_surface(config, native_window)
                      .expect("failed to create surface");
@@ -63,7 +79,7 @@ let display = egli::Display::from_default_display()
 
 let display_handle = display.forget();
 
-egl::terminate(display_handle) // display is terminated
+egli::egl::terminate(display_handle) // display is terminated
     .expect("failed to terminate display"); 
 
 // the display's drop won't run because the forget() was called
