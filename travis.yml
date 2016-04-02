@@ -1,0 +1,24 @@
+sudo: false
+language: rust
+
+env:
+  global:
+    - CRATE=egli
+
+matrix:
+  allow_failures:
+    - rust: nightly
+  include:
+    - rust: nightly
+      env: FEATURES=egl_1_5 DOC=true
+    - rust: nightly
+      env: FEATURES=''
+    - rust: beta
+      env: FEATURES=egl_1_5
+    - rust: stable
+      env: FEATURES=egl_1_5
+script:
+  - cargo test --features "$FEATURES"
+
+after_success:
+  - /bin/bash export_doc.sh
