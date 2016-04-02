@@ -36,19 +36,31 @@ fn main() {
 - Browse [api reference here](http://nercury.github.io/egli-rs/egli/index.html).
 - See OpenGL [example with X11 window here](https://github.com/Nercury/egli-rs/blob/master/examples/x11_gl_window.rs).
 
+### Is it finished?
+
+No, and it may take considerable time to get it into the state where
+we could name it "finished". However, the subset that is implemented
+should be ok to use and should not change drastically, except the way
+`egli::ffi` is bound.
+
+Some things that would be nice to have:
+
+- More complete API coverage in higher-level `egli`.
+- An easy way to decorate error results with additional info from `eglGetError`.
+
 ### What is EGL
 
 EGL is a window system-independent equivalent to the GLX and WGL APIs, which respectively enable OpenGL support in X and Microsoft Windows. It is an interface between Khronos rendering APIs such as OpenGL ES or OpenVG and the underlying native platform window system. It handles graphics context management, surface/buffer binding, and rendering synchronization and enables high-performance, accelerated, mixed-mode 2D and 3D rendering using other Khronos APIs.
 
-### Why use EGL
+### Why use EGLI
 
 Many libraries such as SDL or glutin already do what EGL does (and more). Usually they are using EGL behind the scenes. So using EGL directly only makes sense if:
 
 - You obtained window/display handle by other means.
+- You need complete control of surface configuration.
 - You need to initialize OpenGL context.
-- You have another OpenGL library that needs to call `get_proc_address` which EGL provides.
-- You need a way to swap buffers at the end of the scene which EGL provides.
-- Your platform has EGL library to link to (usually it is Android/Linux, maybe Windows).
+- You already have another OpenGL library that needs to call `get_proc_address` which EGL provides.
+- You need a way to swap buffers at the end of the scene.
 
 ## EGLI Details
 
@@ -59,12 +71,12 @@ EGLI has two abstraction levels.
 Lower level EGL can be found in `egli::egl` namespace.
 The higher level types are in the root `egli` namespace.
 
-## Lower Level EGL Interface
+### Lower Level EGL Interface
 
 Lower level interface is very close to raw `ffi`, but with error
 handling and unsafety removed (except few special cases).
 
-## Higher Level EGL Interface
+### Higher Level EGL Interface
 
 EGLI has [RAII](https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization)
 wrappers for concepts such as `Surface`, `Display` or `Context`. Such structs
@@ -102,7 +114,7 @@ let window_info = DisplayAndSurface {
 Also, an RC wrapper can be easily written which takes care of these dependencies
 as needed by application. This kind of thing is out of scope of this library.
 
-## Using both Higher and Lower Level interfaces
+### Using both Higher and Lower Level interfaces
 
 All the `RAII` objects can be created directly from handles,
 and all of them have `forget()` method that returns the handle
