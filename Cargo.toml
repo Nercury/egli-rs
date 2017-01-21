@@ -1,13 +1,13 @@
 [package]
 name = "egli"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Nerijus Arlauskas <nercury@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "EGL Interface"
 repository = "https://github.com/Nercury/egli-rs"
 documentation = "http://nercury.github.io/egli-rs/egli/index.html"
 keywords = ["ffi", "egl", "bindings"]
-categories = ["api-bindings", "external-ffi-bindings", "multimedia::video"]
+categories = ["api-bindings", "external-ffi-bindings"]
 
 [dev-dependencies.x11]
 features = ["xlib"]
