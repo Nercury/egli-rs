@@ -102,41 +102,37 @@ impl TransparentType {
 }
 
 /// Renderable type mask bits.
-pub mod renderable {
-    bitflags! {
-        pub flags Type: i32 {
-            /// EGL_OPENGL_BIT
-            const OPENGL       = 0x0008,
-            /// EGL_OPENGL_ES_BIT
-            const OPENGL_ES    = 0x0001,
-            /// EGL_OPENGL_ES2_BIT
-            const OPENGL_ES2   = 0x0004,
-            /// EGL_OPENGL_ES3_BIT
-            const OPENGL_ES3   = 0x00000040,
-            /// EGL_OPENVG_BIT
-            const OPENVG       = 0x0002,
-        }
+bitflags! {
+    pub struct RenderableType: i32 {
+        /// EGL_OPENGL_BIT
+        const OPENGL       = 0x0008;
+        /// EGL_OPENGL_ES_BIT
+        const OPENGL_ES    = 0x0001;
+        /// EGL_OPENGL_ES2_BIT
+        const OPENGL_ES2   = 0x0004;
+        /// EGL_OPENGL_ES3_BIT
+        const OPENGL_ES3   = 0x00000040;
+        /// EGL_OPENVG_BIT
+        const OPENVG       = 0x0002;
     }
 }
 
 /// Surface type mask bits.
-pub mod surface {
-    bitflags! {
-        pub flags Type: i32 {
-            /// EGL_PBUFFER_BIT
-            const PBUFFER                  = 0x0001,
-            /// EGL_PIXMAP_BIT
-            const PIXMAP                   = 0x0002,
-            /// EGL_WINDOW_BIT
-            const WINDOW                   = 0x0004,
-            /// EGL_VG_COLORSPACE_LINEAR_BIT
-            const VG_COLORSPACE_LINEAR     = 0x0020,
-            /// EGL_VG_ALPHA_FORMAT_PRE_BIT
-            const VG_ALPHA_FORMAT_PRE      = 0x0040,
-            /// EGL_MULTISAMPLE_RESOLVE_BOX_BIT
-            const MULTISAMPLE_RESOLVE_BOX  = 0x0200,
-            /// EGL_SWAP_BEHAVIOR_PRESERVED_BIT
-            const SWAP_BEHAVIOR_PRESERVED  = 0x0400,
-        }
+bitflags! {
+    pub struct SurfaceType: i32 {
+        /// EGL_PBUFFER_BIT
+        const PBUFFER                  = 0x0001;
+        /// EGL_PIXMAP_BIT
+        const PIXMAP                   = 0x0002;
+        /// EGL_WINDOW_BIT
+        const WINDOW                   = 0x0004;
+        /// EGL_VG_COLORSPACE_LINEAR_BIT
+        const VG_COLORSPACE_LINEAR     = 0x0020;
+        /// EGL_VG_ALPHA_FORMAT_PRE_BIT
+        const VG_ALPHA_FORMAT_PRE      = 0x0040;
+        /// EGL_MULTISAMPLE_RESOLVE_BOX_BIT
+        const MULTISAMPLE_RESOLVE_BOX  = 0x0200;
+        /// EGL_SWAP_BEHAVIOR_PRESERVED_BIT
+        const SWAP_BEHAVIOR_PRESERVED  = 0x0400;
     }
 }

@@ -8,9 +8,7 @@
 use egl;
 use std::fmt;
 use error::Result;
-use {ColorBufferType, ConfigCaveat, TransparentType};
-use renderable;
-use surface;
+use {ColorBufferType, ConfigCaveat, RenderableType, SurfaceType, TransparentType};
 
 /// `[EGL 1.0]` Reference to frame buffer configuration.
 ///
@@ -123,9 +121,9 @@ impl FrameBufferConfigRef {
     /// EGL_CONFORMANT is supported only if the EGL version is 1.3 or greater.
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_CONFORMANT` attribute.
-    pub fn conformant(&self) -> Result<renderable::Type> {
+    pub fn conformant(&self) -> Result<RenderableType> {
         self.get_attrib(egl::EGL_CONFORMANT)
-            .map(|v| renderable::Type::from_bits_truncate(v))
+            .map(|v| RenderableType::from_bits_truncate(v))
     }
 
     /// Returns the number of bits in the depth buffer.
@@ -230,9 +228,9 @@ impl FrameBufferConfigRef {
     /// Returns a bitmask indicating the types of supported client API contexts.
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_RENDERABLE_TYPE` attribute.
-    pub fn renderable_type(&self) -> Result<renderable::Type> {
+    pub fn renderable_type(&self) -> Result<RenderableType> {
         self.get_attrib(egl::EGL_RENDERABLE_TYPE)
-            .map(|v| renderable::Type::from_bits_truncate(v))
+            .map(|v| RenderableType::from_bits_truncate(v))
     }
 
     /// Returns the number of multisample buffers.
@@ -260,9 +258,9 @@ impl FrameBufferConfigRef {
     /// Returns a bitmask indicating the types of supported EGL surfaces.
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_SURFACE_TYPE` attribute.
-    pub fn surface_type(&self) -> Result<surface::Type> {
+    pub fn surface_type(&self) -> Result<SurfaceType> {
         self.get_attrib(egl::EGL_SURFACE_TYPE)
-            .map(|v| surface::Type::from_bits_truncate(v))
+            .map(|v| SurfaceType::from_bits_truncate(v))
     }
 
     /// Returns the type of supported transparency.

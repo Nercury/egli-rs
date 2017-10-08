@@ -7,10 +7,8 @@
 
 use std::ptr;
 use egl::{self, EGLDisplay, EGLint};
-use renderable;
-use surface;
 use error::Result;
-use {FrameBufferConfigRef, ColorBufferType, ConfigCaveat, TransparentType};
+use {FrameBufferConfigRef, ColorBufferType, ConfigCaveat, RenderableType, SurfaceType, TransparentType};
 
 /// `[EGL 1.0]` Configuration filter builder.
 pub struct ConfigFilterRef {
@@ -232,19 +230,19 @@ impl ConfigFilterRef {
     /// created with respect to the frame buffer configuration config must pass the
     /// required conformance tests for that API. Mask bits include:
     ///
-    /// ## renderable::OPENGL
+    /// ## RenderableType::OPENGL
     ///
     /// Config supports creating OpenGL contexts.
     ///
-    /// ## renderable::OPENGL_ES
+    /// ## RenderableType::OPENGL_ES
     ///
     /// Config supports creating OpenGL ES 1.0 and/or 1.1 contexts.
     ///
-    /// ## renderable::OPENGL_ES2
+    /// ## RenderableType::OPENGL_ES2
     ///
     /// Config supports creating OpenGL ES 2.0 contexts.
     ///
-    /// ## renderable::OPENVG
+    /// ## RenderableType::OPENVG
     ///
     /// Config supports creating OpenVG contexts.
     ///
@@ -256,7 +254,7 @@ impl ConfigFilterRef {
     /// desirable to select a nonconformant config.
     /// Conformance requirements limit the number of non-conformant configs that an
     /// implementation can define.
-    pub fn with_conformant(mut self, value: renderable::Type) -> Self {
+    pub fn with_conformant(mut self, value: RenderableType) -> Self {
         self.conformant = Some([egl::EGL_CONFORMANT, value.bits() as EGLint]);
         self
     }
@@ -405,7 +403,7 @@ impl ConfigFilterRef {
     /// frame buffer configuration must support creating with eglCreateContext).
     /// Mask bits are the same as for attribute EGL_CONFORMANT.
     /// The default value is EGL_OPENGL_ES_BIT.
-    pub fn with_renderable_type(mut self, value: renderable::Type) -> Self {
+    pub fn with_renderable_type(mut self, value: RenderableType) -> Self {
         self.renderable_type = Some([egl::EGL_RENDERABLE_TYPE, value.bits() as EGLint]);
         self
     }
@@ -413,43 +411,43 @@ impl ConfigFilterRef {
     /// Must be followed by a bitmask indicating which EGL surface types and capabilities
     /// the frame buffer configuration must support. Mask bits include:
     ///
-    /// ## surface::MULTISAMPLE_RESOLVE_BOX
+    /// ## SurfaceType::MULTISAMPLE_RESOLVE_BOX
     ///
     /// Config allows specifying box filtered multisample resolve behavior with
     /// `eglSurfaceAttrib`.
     ///
-    /// ## surface::PBUFFER
+    /// ## SurfaceType::PBUFFER
     ///
     /// Config supports creating pixel buffer surfaces.
     ///
-    /// ## surface::PIXMAP
+    /// ## SurfaceType::PIXMAP
     ///
     /// Config supports creating pixmap surfaces.
     ///
-    /// ## surface::SWAP_BEHAVIOR_PRESERVED
+    /// ## SurfaceType::SWAP_BEHAVIOR_PRESERVED
     ///
     /// Config allows setting swap behavior for color buffers with eglSurfaceAttrib.
     ///
-    /// ## surface::VG_ALPHA_FORMAT_PRE
+    /// ## SurfaceType::VG_ALPHA_FORMAT_PRE
     ///
     /// Config allows specifying OpenVG rendering with premultiplied alpha values at surface
     /// creation time (see `eglCreatePbufferSurface`, `eglCreatePixmapSurface`, and
     /// `eglCreateWindowSurface`).
     ///
-    /// ## surface::VG_COLORSPACE_LINEAR
+    /// ## SurfaceType::VG_COLORSPACE_LINEAR
     ///
     /// Config allows specifying OpenVG rendering in a linear colorspace at surface creation
     /// time (see `eglCreatePbufferSurface`, `eglCreatePixmapSurface`, and
     /// `eglCreateWindowSurface`).
     ///
-    /// ## surface::WINDOW
+    /// ## SurfaceType::WINDOW
     ///
     /// Config supports creating window surfaces.
     ///
-    /// For example, if the bitmask is set to `surface::WINDOW` | `surface::PIXMAP`, only
+    /// For example, if the bitmask is set to `SurfaceType::WINDOW` | `SurfaceType::PIXMAP`, only
     /// frame buffer configurations that support both windows and pixmaps will be considered.
-    /// The default value is `surface::WINDOW`.
-    pub fn with_surface_type(mut self, value: surface::Type) -> Self {
+    /// The default value is `SurfaceType::WINDOW`.
+    pub fn with_surface_type(mut self, value: SurfaceType) -> Self {
         self.surface_type = Some([egl::EGL_SURFACE_TYPE, value.bits() as EGLint]);
         self
     }
