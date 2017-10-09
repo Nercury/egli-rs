@@ -7,7 +7,7 @@
 ```rust
 extern crate egli;
 
-use egli::{ Display, renderable };
+use egli::{ Display, RenderableType };
 
 fn main() {
     let display = Display::from_default_display()
@@ -21,7 +21,7 @@ fn main() {
                          .with_red_size(8)
                          .with_green_size(8)
                          .with_depth_size(24)
-                         .with_conformant(renderable::OPENGL_ES2)
+                         .with_conformant(RenderableType::OPENGL_ES2)
                          .choose_configs()
                          .expect("failed to get configurations");
 
