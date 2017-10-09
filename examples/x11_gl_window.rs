@@ -4,7 +4,7 @@ extern crate libc;
 extern crate gl;
 
 use std::mem;
-use egli::{Display, surface, renderable};
+use egli::{Display, SurfaceType, RenderableType};
 
 fn main() {
     println!("This example requires GL, EGL and xlib installed.");
@@ -23,8 +23,8 @@ fn main() {
                              .with_green_size(8)
                              .with_blue_size(8)
                              .with_depth_size(24)
-                             .with_surface_type(surface::WINDOW)
-                             .with_renderable_type(renderable::OPENGL)
+                             .with_surface_type(SurfaceType::WINDOW)
+                             .with_renderable_type(RenderableType::OPENGL)
                              .choose_configs()
                              .expect("failed to get configurations");
 

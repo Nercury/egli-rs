@@ -1,7 +1,7 @@
 extern crate egli;
 
 use egli::Display;
-use egli::renderable;
+use egli::RenderableType;
 
 fn main() {
     println!("This example requires EGL library installed.");
@@ -33,7 +33,7 @@ fn main() {
                          .with_alpha_size(8)
                          .with_buffer_size(32)
                          .with_depth_size(32)
-                         .with_conformant(renderable::OPENGL_ES2)
+                         .with_conformant(RenderableType::OPENGL_ES2)
                          .choose_configs()
                          .expect("failed to get configurations");
 
