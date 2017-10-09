@@ -18,8 +18,8 @@
 
 //! C-style lower level EGL wrapper with unsafety removed.
 //!
-//! Use these only if higher-level EGLI abstration is not enough, and you need to manage
-//! resource clanup manually.
+//! Use these only if higher-level EGLI abstraction is not enough, and you need to manage
+//! resource cleanup manually.
 
 #![allow(dead_code)]
 #![allow(non_upper_case_globals)]

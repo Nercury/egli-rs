@@ -1,6 +1,6 @@
 //! Unsafe FFI API.
 //!
-//! Use these only if higher-level EGLI or EGL abstrations are not enough.
+//! Use these only if higher-level EGLI or EGL abstractions are not enough.
 
 #[allow(unused_imports)]
 use libc::{c_char, c_void};
