@@ -26,7 +26,7 @@ fn main() {
                          .expect("failed to get configurations");
 
     println!("There are {} display configurations", configs.len());
-    println!("First found configuration mathing parameters is: {:#?}",
+    println!("First found configuration matching parameters is: {:#?}",
              configs.first());
 
     // proceed to create surface & context ...
@@ -95,8 +95,8 @@ let display = egli::Display::from_default_display()
 let surface = display.create_window_surface(config, native_window)
                      .expect("failed to create surface");
 
-// at the end of scope the surface will be droped
-// and then the display will be droped
+// at the end of scope the surface will be dropped
+// and then the display will be dropped
 
 // the resources will be freed in this exact order
 ```

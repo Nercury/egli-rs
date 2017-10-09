@@ -1,6 +1,6 @@
 [package]
 name = "egli"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Nerijus Arlauskas <nercury@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "EGL Interface"
