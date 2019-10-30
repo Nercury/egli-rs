@@ -553,7 +553,7 @@ impl ConfigFilterRef {
                                    self.transparent_red_value,
                                    self.transparent_green_value,
                                    self.transparent_blue_value]
-                                      .into_iter()
+                                      .iter()
                                       .flat_map(|option| option)
                                       .flat_map(|arr| arr)
                                       .chain(&[egl::EGL_NONE])
