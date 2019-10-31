@@ -44,16 +44,16 @@ use std::mem;
 /// Their values must match the major and minor values returned by `Display::initialize`.
 #[cfg(feature = "egl_1_5")]
 pub fn query_version() -> error::Result<&'static str> {
-    let cstr = try!(egl::query_string(egl::EGL_NO_DISPLAY, egl::EGL_VERSION));
-    Ok(try!(cstr.to_str()))
+    let cstr = egl::query_string(egl::EGL_NO_DISPLAY, egl::EGL_VERSION)?;
+    Ok(cstr.to_str()?)
 }
 
 /// `[EGL 1.0]` Get all supported client extensions.
 ///
 /// Returns a space separated list of supported extensions.
 pub fn query_extensions() -> error::Result<&'static str> {
-    let cstr = try!(egl::query_string(egl::EGL_NO_DISPLAY, egl::EGL_EXTENSIONS));
-    Ok(try!(cstr.to_str()))
+    let cstr = egl::query_string(egl::EGL_NO_DISPLAY, egl::EGL_EXTENSIONS)?;
+    Ok(cstr.to_str()?)
 }
 
 #[repr(i32)]
@@ -96,8 +96,8 @@ impl TransparentType {
     }
 }
 
-/// Renderable type mask bits.
 bitflags! {
+    /// Renderable type mask bits.
     pub struct RenderableType: i32 {
         /// EGL_OPENGL_BIT
         const OPENGL       = 0x0008;
@@ -112,8 +112,8 @@ bitflags! {
     }
 }
 
-/// Surface type mask bits.
 bitflags! {
+    /// Surface type mask bits.
     pub struct SurfaceType: i32 {
         /// EGL_PBUFFER_BIT
         const PBUFFER                  = 0x0001;

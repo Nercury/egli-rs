@@ -298,49 +298,49 @@ impl FrameBufferConfigRef {
 
     fn get_attrib(&self, attribute: egl::EGLint) -> Result<egl::EGLint> {
         let mut value: egl::EGLint = 0;
-        try!(egl::get_config_attrib(self.display_handle,
+        egl::get_config_attrib(self.display_handle,
                                     self.config_handle,
                                     attribute,
-                                    &mut value));
+                                    &mut value)?;
         Ok(value)
     }
 
     fn format_debug_struct(&self, f: &mut fmt::Formatter) -> Result<fmt::Result> {
         Ok(f.debug_struct("FrameBufferConfigRef")
-            .field("config_id", &try!(self.config_id()))
-            .field("red_size", &try!(self.red_size()))
-            .field("green_size", &try!(self.green_size()))
-            .field("blue_size", &try!(self.blue_size()))
-            .field("alpha_size", &try!(self.alpha_size()))
-            .field("buffer_size", &try!(self.buffer_size()))
-            .field("alpha_mask_size", &try!(self.alpha_mask_size()))
-            .field("depth_size", &try!(self.depth_size()))
-            .field("stencil_size", &try!(self.stencil_size()))
-            .field("bind_to_texture_rgb", &try!(self.bind_to_texture_rgb()))
-            .field("bind_to_texture_rgba", &try!(self.bind_to_texture_rgba()))
-            .field("color_buffer_type", &try!(self.color_buffer_type()))
-            .field("config_caveat", &try!(self.config_caveat()))
-            .field("conformant", &try!(self.conformant()))
-            .field("level", &try!(self.level()))
-            .field("luminance_size", &try!(self.luminance_size()))
-            .field("max_pbuffer_width", &try!(self.max_pbuffer_width()))
-            .field("max_pbuffer_height", &try!(self.max_pbuffer_height()))
-            .field("max_pbuffer_pixels", &try!(self.max_pbuffer_pixels()))
-            .field("max_swap_interval", &try!(self.max_swap_interval()))
-            .field("min_swap_interval", &try!(self.min_swap_interval()))
-            .field("native_renderable", &try!(self.native_renderable()))
-            .field("native_visual_id", &try!(self.native_visual_id()))
-            .field("native_visual_type", &try!(self.native_visual_type()))
-            .field("renderable_type", &try!(self.renderable_type()))
-            .field("sample_buffers", &try!(self.sample_buffers()))
-            .field("samples", &try!(self.samples()))
-            .field("surface_type", &try!(self.surface_type()))
-            .field("transparent_type", &try!(self.transparent_type()))
-            .field("transparent_red_value", &try!(self.transparent_red_value()))
+            .field("config_id", &self.config_id()?)
+            .field("red_size", &self.red_size()?)
+            .field("green_size", &self.green_size()?)
+            .field("blue_size", &self.blue_size()?)
+            .field("alpha_size", &self.alpha_size()?)
+            .field("buffer_size", &self.buffer_size()?)
+            .field("alpha_mask_size", &self.alpha_mask_size()?)
+            .field("depth_size", &self.depth_size()?)
+            .field("stencil_size", &self.stencil_size()?)
+            .field("bind_to_texture_rgb", &self.bind_to_texture_rgb()?)
+            .field("bind_to_texture_rgba", &self.bind_to_texture_rgba()?)
+            .field("color_buffer_type", &self.color_buffer_type()?)
+            .field("config_caveat", &self.config_caveat()?)
+            .field("conformant", &self.conformant()?)
+            .field("level", &self.level()?)
+            .field("luminance_size", &self.luminance_size()?)
+            .field("max_pbuffer_width", &self.max_pbuffer_width()?)
+            .field("max_pbuffer_height", &self.max_pbuffer_height()?)
+            .field("max_pbuffer_pixels", &self.max_pbuffer_pixels()?)
+            .field("max_swap_interval", &self.max_swap_interval()?)
+            .field("min_swap_interval", &self.min_swap_interval()?)
+            .field("native_renderable", &self.native_renderable()?)
+            .field("native_visual_id", &self.native_visual_id()?)
+            .field("native_visual_type", &self.native_visual_type()?)
+            .field("renderable_type", &self.renderable_type()?)
+            .field("sample_buffers", &self.sample_buffers()?)
+            .field("samples", &self.samples()?)
+            .field("surface_type", &self.surface_type()?)
+            .field("transparent_type", &self.transparent_type()?)
+            .field("transparent_red_value", &self.transparent_red_value()?)
             .field("transparent_green_value",
-                   &try!(self.transparent_green_value()))
+                   &self.transparent_green_value()?)
             .field("transparent_blue_value",
-                   &try!(self.transparent_blue_value()))
+                   &self.transparent_blue_value()?)
             .finish())
     }
 }

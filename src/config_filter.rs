@@ -560,11 +560,11 @@ impl ConfigFilterRef {
                                       .cloned()
                                       .collect();
 
-        let count = try!(egl::num_filtered_configs(self.handle, &attrib_list)) as usize;
+        let count = egl::num_filtered_configs(self.handle, &attrib_list)? as usize;
 
         let mut configs: Vec<egl::EGLConfig> = vec![ptr::null_mut(); count];
         let returned_count =
-            try!(egl::get_filtered_configs(self.handle, &attrib_list, &mut configs)) as usize;
+            egl::get_filtered_configs(self.handle, &attrib_list, &mut configs)? as usize;
 
         Ok(configs[..returned_count]
                .iter()

@@ -1,6 +1,6 @@
 [package]
 name = "egli"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["Nerijus Arlauskas <nercury@gmail.com>"]
 license = "MIT OR Apache-2.0"
 description = "EGL Interface"
@@ -11,14 +11,14 @@ categories = ["api-bindings", "external-ffi-bindings"]
 
 [dev-dependencies.x11]
 features = ["xlib"]
-version = "2.12"
+version = "2.18"
 
 [dev-dependencies.gl]
-version = "0.6"
+version = "0.14"
 
 [dependencies]
 libc = "0.2"
-bitflags = "1.0"
+bitflags = "1.2"
 
 [features]
 egl_1_5 = []

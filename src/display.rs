@@ -89,7 +89,7 @@ impl Display {
     pub fn initialize_and_get_version(&self) -> Result<Version> {
         let (mut major, mut minor) = (0, 0);
 
-        try!(egl::initialize_and_get_version(self.handle, &mut major, &mut minor));
+        egl::initialize_and_get_version(self.handle, &mut major, &mut minor)?;
 
         Ok(Version {
             major: major as i32,
@@ -103,7 +103,7 @@ impl Display {
     /// Initializing an already initialized EGL display connection has no effect.
     pub fn initialize(&self) -> Result<()> {
 
-        try!(egl::initialize(self.handle));
+        egl::initialize(self.handle)?;
 
         Ok(())
     }
@@ -116,8 +116,8 @@ impl Display {
     /// These strings correspond respectively to values EGL_OPENGL_API, EGL_OPENGL_ES_API, and
     /// EGL_OPENVG_API of the eglBindAPI, api argument.
     pub fn query_client_apis(&self) -> Result<&'static str> {
-        let cstr = try!(egl::query_string(self.handle, egl::EGL_CLIENT_APIS));
-        Ok(try!(cstr.to_str()))
+        let cstr = egl::query_string(self.handle, egl::EGL_CLIENT_APIS)?;
+        Ok(cstr.to_str()?)
     }
 
     /// `[EGL 1.0]` Query EGL_VENDOR.
@@ -125,8 +125,8 @@ impl Display {
     /// The vendor-specific information is optional; if present, its format
     /// and contents are implementation specific.
     pub fn query_vendor(&self) -> Result<&'static str> {
-        let cstr = try!(egl::query_string(self.handle, egl::EGL_VENDOR));
-        Ok(try!(cstr.to_str()))
+        let cstr = egl::query_string(self.handle, egl::EGL_VENDOR)?;
+        Ok(cstr.to_str()?)
     }
 
     /// `[EGL 1.0]` Get supported EGL version for this display.
@@ -139,16 +139,16 @@ impl Display {
     /// Both the major and minor portions of the version number are numeric.
     /// Their values must match the major and minor values returned by initialize.
     pub fn query_version(&self) -> Result<&'static str> {
-        let cstr = try!(egl::query_string(self.handle, egl::EGL_VERSION));
-        Ok(try!(cstr.to_str()))
+        let cstr = egl::query_string(self.handle, egl::EGL_VERSION)?;
+        Ok(cstr.to_str()?)
     }
 
     /// `[EGL 1.0]` Get the set of display extensions supported by this display.
     ///
     /// Returns a space separated list of supported extensions.
     pub fn query_extensions(&self) -> Result<&'static str> {
-        let cstr = try!(egl::query_string(self.handle, egl::EGL_EXTENSIONS));
-        Ok(try!(cstr.to_str()))
+        let cstr = egl::query_string(self.handle, egl::EGL_EXTENSIONS)?;
+        Ok(cstr.to_str()?)
     }
 
     /// `[EGL 1.0]` Get all possible display configurations.
@@ -158,10 +158,10 @@ impl Display {
     ///
     /// These handles are then wrapped into a new `Vec<FrameBufferConfigRef>`.
     pub fn get_configs(&self) -> Result<Vec<FrameBufferConfigRef>> {
-        let count = try!(egl::num_configs(self.handle)) as usize;
+        let count = egl::num_configs(self.handle)? as usize;
 
         let mut configs: Vec<egl::EGLConfig> = vec![ptr::null_mut(); count];
-        let returned_count = try!(egl::get_configs(self.handle, &mut configs)) as usize;
+        let returned_count = egl::get_configs(self.handle, &mut configs)? as usize;
 
         Ok(configs[..returned_count]
                .iter()
@@ -198,7 +198,7 @@ impl Display {
 
         let maybe_handle = egl::create_window_surface(self.handle, config.handle(), window);
 
-        Ok(Surface::from_handle(self.handle, try!(maybe_handle)))
+        Ok(Surface::from_handle(self.handle, maybe_handle?))
     }
 
     /// `[EGL 1.0]` Create a new EGL rendering context.
@@ -206,7 +206,7 @@ impl Display {
 
         let maybe_handle = egl::create_context(self.handle, config.handle());
 
-        Ok(Context::from_handle(self.handle, try!(maybe_handle)))
+        Ok(Context::from_handle(self.handle, maybe_handle?))
     }
 
     /// `[EGL 1.3]` Create a new EGL rendering context.
@@ -227,27 +227,27 @@ impl Display {
                                                             ptr::null_mut(),
                                                             &attribs);
 
-        Ok(Context::from_handle(self.handle, try!(maybe_handle)))
+        Ok(Context::from_handle(self.handle, maybe_handle?))
     }
 
     /// `[EGL 1.0]` Attach an EGL rendering context to EGL surfaces.
     pub fn make_current(&self, draw: &Surface, read: &Surface, context: &Context) -> Result<()> {
-        try!(egl::make_current(self.handle, draw.handle(), read.handle(), context.handle()));
+        egl::make_current(self.handle, draw.handle(), read.handle(), context.handle())?;
         Ok(())
     }
 
     /// `[EGL 1.0]` Detatch an EGL rendering context from EGL surfaces and contexts.
     pub fn make_not_current(&self) -> Result<()> {
-        try!(egl::make_current(self.handle,
+        egl::make_current(self.handle,
                                egl::EGL_NO_SURFACE,
                                egl::EGL_NO_SURFACE,
-                               egl::EGL_NO_CONTEXT));
+                               egl::EGL_NO_CONTEXT)?;
         Ok(())
     }
 
     /// `[EGL 1.0]` Post EGL surface color buffer to a native window.
     pub fn swap_buffers(&self, surface: &Surface) -> Result<()> {
-        try!(egl::swap_buffers(self.handle, surface.handle()));
+        egl::swap_buffers(self.handle, surface.handle())?;
         Ok(())
     }
 

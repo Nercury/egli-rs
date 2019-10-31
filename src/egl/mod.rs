@@ -37,7 +37,7 @@ use std::ptr;
 use ffi;
 use error::{EglCallError, EglCallResult};
 
-use libc::{c_uint, c_void, int32_t};
+use libc::{c_uint, c_void};
 
 // -------------------------------------------------------------------------------------------------
 // LINKING
@@ -56,7 +56,7 @@ pub type EGLConfig = *mut c_void;
 pub type EGLContext = *mut c_void;
 pub type EGLDisplay = *mut c_void;
 pub type EGLenum = c_uint;
-pub type EGLint = khronos::khronos_int32_t;
+pub type EGLint = i32;
 pub type EGLNativeDisplayType = *mut c_void;
 pub type EGLSurface = *mut c_void;
 // EGL 1.5
@@ -380,7 +380,7 @@ pub fn bind_tex_image(display: EGLDisplay,
 ///
 /// On failure returns `None`.
 pub fn num_filtered_configs(display: EGLDisplay, attrib_list: &[EGLint]) -> EglCallResult<i32> {
-    let mut count: int32_t = 0;
+    let mut count: i32 = 0;
     if unsafe {
         ffi::eglChooseConfig(display,
                              attrib_list.as_ptr(),
@@ -402,12 +402,12 @@ pub fn get_filtered_configs(display: EGLDisplay,
                             attrib_list: &[EGLint],
                             configs: &mut [EGLConfig])
                             -> EglCallResult<i32> {
-    let mut count: int32_t = 0;
+    let mut count: i32 = 0;
     if unsafe {
         ffi::eglChooseConfig(display,
                              attrib_list.as_ptr(),
                              mem::transmute(configs.as_mut_ptr()),
-                             configs.len() as int32_t,
+                             configs.len() as i32,
                              &mut count)
     } != EGL_TRUE {
         return Err(EglCallError::ChooseConfig);
@@ -618,7 +618,7 @@ pub fn get_config_attrib(display: EGLDisplay,
 ///
 /// On failure returns `None`.
 pub fn num_configs(display: EGLDisplay) -> EglCallResult<i32> {
-    let mut count: int32_t = 0;
+    let mut count: i32 = 0;
     if unsafe { ffi::eglGetConfigs(display, ptr::null_mut(), 0, &mut count) } != EGL_TRUE {
         return Err(EglCallError::GetConfigs);
     }
@@ -629,11 +629,11 @@ pub fn num_configs(display: EGLDisplay) -> EglCallResult<i32> {
 ///
 /// Returns the number of configs written, `None` on failure.
 pub fn get_configs(display: EGLDisplay, configs: &mut [EGLConfig]) -> EglCallResult<i32> {
-    let mut count: int32_t = 0;
+    let mut count: i32 = 0;
     if unsafe {
         ffi::eglGetConfigs(display,
                            mem::transmute(configs.as_mut_ptr()),
-                           configs.len() as int32_t,
+                           configs.len() as i32,
                            &mut count)
     } != EGL_TRUE {
         return Err(EglCallError::GetConfigs);

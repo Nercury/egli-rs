@@ -57,7 +57,7 @@ impl Surface {
     /// Result of `eglQuerySurface` with `EGL_WIDTH` parameter.
     pub fn query_width(&self) -> Result<i32> {
         let mut value: egl::EGLint = 0;
-        try!(egl::query_surface(self.display_handle, self.handle, egl::EGL_WIDTH, &mut value));
+        egl::query_surface(self.display_handle, self.handle, egl::EGL_WIDTH, &mut value)?;
         Ok(value as i32)
     }
 
@@ -66,10 +66,10 @@ impl Surface {
     /// Result of `eglQuerySurface` with `EGL_HEIGHT` parameter.
     pub fn query_height(&self) -> Result<i32> {
         let mut value: egl::EGLint = 0;
-        try!(egl::query_surface(self.display_handle,
+        egl::query_surface(self.display_handle,
                                 self.handle,
                                 egl::EGL_HEIGHT,
-                                &mut value));
+                                &mut value)?;
         Ok(value as i32)
     }
 
