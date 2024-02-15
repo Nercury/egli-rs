@@ -9,6 +9,7 @@ use egl;
 use std::ptr;
 use error::Result;
 use {Surface, Context, Version, FrameBufferConfigRef, ConfigFilterRef};
+use egl::EGLint;
 
 pub enum ContextClientVersion {
     OpenGlEs1,
@@ -197,6 +198,16 @@ impl Display {
                                  -> Result<Surface> {
 
         let maybe_handle = egl::create_window_surface(self.handle, config.handle(), window);
+
+        Ok(Surface::from_handle(self.handle, maybe_handle?))
+    }
+
+    pub fn create_pbuffer_surface(
+        &self,
+        config: FrameBufferConfigRef,
+        attrib_list: &[EGLint],
+    ) -> Result<Surface> {
+        let maybe_handle = egl::create_pbuffer_surface(self.handle, config.handle(), attrib_list);
 
         Ok(Surface::from_handle(self.handle, maybe_handle?))
     }
