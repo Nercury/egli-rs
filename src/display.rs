@@ -216,6 +216,23 @@ impl Display {
         Ok(Context::from_handle(self.handle, maybe_handle?))
     }
 
+    /// `[EGL 1.0]` Create a new EGL rendering context.
+    pub fn create_shared_context(
+        &self,
+        share_context: &Context,
+        config: FrameBufferConfigRef,
+        attrib_list: Option<&[EGLint]>,
+    ) -> Result<Context> {
+        let maybe_handle = egl::create_context_with_attribs(
+            self.handle,
+            config.handle(),
+            share_context.handle(),
+            attrib_list.unwrap(),
+        );
+
+        Ok(Context::from_handle(self.handle, maybe_handle?))
+    }
+
     /// `[EGL 1.3]` Create a new EGL rendering context.
     pub fn create_context_with_client_version(
         &self,
