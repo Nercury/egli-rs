@@ -37,9 +37,10 @@ impl Into<egl::EGLSurface> for Surface {
 
 impl Surface {
     /// Create a `Surface` from an existing EGL display and surface handles.
-    pub fn from_handle(display_handle: egl::EGLDisplay,
-                       surface_handle: egl::EGLSurface)
-                       -> Surface {
+    pub fn from_handle(
+        display_handle: egl::EGLDisplay,
+        surface_handle: egl::EGLSurface,
+    ) -> Surface {
         Surface {
             terminated: false,
             display_handle: display_handle,
@@ -66,10 +67,12 @@ impl Surface {
     /// Result of `eglQuerySurface` with `EGL_HEIGHT` parameter.
     pub fn query_height(&self) -> Result<i32> {
         let mut value: egl::EGLint = 0;
-        egl::query_surface(self.display_handle,
-                                self.handle,
-                                egl::EGL_HEIGHT,
-                                &mut value)?;
+        egl::query_surface(
+            self.display_handle,
+            self.handle,
+            egl::EGL_HEIGHT,
+            &mut value,
+        )?;
         Ok(value as i32)
     }
 

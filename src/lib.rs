@@ -14,22 +14,22 @@ extern crate libc;
 extern crate bitflags;
 
 pub mod egl;
-pub mod ffi;
 pub mod error;
+pub mod ffi;
 
-mod display;
-mod context;
-mod window_surface;
 mod config_filter;
+mod context;
+mod display;
 mod frame_buffer_config;
 mod version;
+mod window_surface;
 
-pub use display::{Display, ContextClientVersion};
-pub use context::Context;
-pub use window_surface::Surface;
 pub use config_filter::ConfigFilterRef;
+pub use context::Context;
+pub use display::{ContextClientVersion, Display};
 pub use frame_buffer_config::FrameBufferConfigRef;
 pub use version::Version;
+pub use window_surface::Surface;
 
 use std::mem;
 
