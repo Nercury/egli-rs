@@ -36,9 +36,10 @@ impl Into<egl::EGLContext> for Context {
 
 impl Context {
     /// Create a `Context` from an existing EGL display and context handles.
-    pub fn from_handle(display_handle: egl::EGLDisplay,
-                       context_handle: egl::EGLSurface)
-                       -> Context {
+    pub fn from_handle(
+        display_handle: egl::EGLDisplay,
+        context_handle: egl::EGLSurface,
+    ) -> Context {
         Context {
             terminated: false,
             display_handle: display_handle,

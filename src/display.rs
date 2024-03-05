@@ -6,10 +6,10 @@
 // copied, modified, or distributed except according to those terms.
 
 use egl;
-use std::ptr;
-use error::Result;
-use {Surface, Context, Version, FrameBufferConfigRef, ConfigFilterRef};
 use egl::EGLint;
+use error::Result;
+use std::ptr;
+use {ConfigFilterRef, Context, FrameBufferConfigRef, Surface, Version};
 
 pub enum ContextClientVersion {
     OpenGlEs1,
@@ -64,12 +64,10 @@ impl Display {
     /// default display.
     pub fn from_display_id(display_id: egl::EGLNativeDisplayType) -> Result<Display> {
         match egl::get_display(display_id) {
-            Ok(handle) => {
-                Ok(Display {
-                    terminated: false,
-                    handle: handle,
-                })
-            }
+            Ok(handle) => Ok(Display {
+                terminated: false,
+                handle: handle,
+            }),
             Err(e) => Err(e.into()),
         }
     }
@@ -103,7 +101,6 @@ impl Display {
     /// `eglInitialize` initializes the EGL display connection obtained with `eglGetDisplay`.
     /// Initializing an already initialized EGL display connection has no effect.
     pub fn initialize(&self) -> Result<()> {
-
         egl::initialize(self.handle)?;
 
         Ok(())
@@ -165,9 +162,9 @@ impl Display {
         let returned_count = egl::get_configs(self.handle, &mut configs)? as usize;
 
         Ok(configs[..returned_count]
-               .iter()
-               .map(|c| FrameBufferConfigRef::from_native(self.handle, *c))
-               .collect())
+            .iter()
+            .map(|c| FrameBufferConfigRef::from_native(self.handle, *c))
+            .collect())
     }
 
     /// `[EGL 1.0]` Creates a new config filter for this display for safe
@@ -192,11 +189,11 @@ impl Display {
     }
 
     /// `[EGL 1.0]` Create a new EGL window surface.
-    pub fn create_window_surface(&self,
-                                 config: FrameBufferConfigRef,
-                                 window: egl::EGLNativeWindowType)
-                                 -> Result<Surface> {
-
+    pub fn create_window_surface(
+        &self,
+        config: FrameBufferConfigRef,
+        window: egl::EGLNativeWindowType,
+    ) -> Result<Surface> {
         let maybe_handle = egl::create_window_surface(self.handle, config.handle(), window);
 
         Ok(Surface::from_handle(self.handle, maybe_handle?))
@@ -214,29 +211,49 @@ impl Display {
 
     /// `[EGL 1.0]` Create a new EGL rendering context.
     pub fn create_context(&self, config: FrameBufferConfigRef) -> Result<Context> {
-
         let maybe_handle = egl::create_context(self.handle, config.handle());
 
         Ok(Context::from_handle(self.handle, maybe_handle?))
     }
 
+    /// `[EGL 1.0]` Create a new EGL rendering context.
+    pub fn create_shared_context(
+        &self,
+        share_context: &Context,
+        config: FrameBufferConfigRef,
+        attrib_list: Option<&[EGLint]>,
+    ) -> Result<Context> {
+        let maybe_handle = egl::create_context_with_attribs(
+            self.handle,
+            config.handle(),
+            share_context.handle(),
+            attrib_list.unwrap(),
+        );
+
+        Ok(Context::from_handle(self.handle, maybe_handle?))
+    }
+
     /// `[EGL 1.3]` Create a new EGL rendering context.
-    pub fn create_context_with_client_version(&self,
-                                              config: FrameBufferConfigRef,
-                                              client_version: ContextClientVersion)
-                                              -> Result<Context> {
+    pub fn create_context_with_client_version(
+        &self,
+        config: FrameBufferConfigRef,
+        client_version: ContextClientVersion,
+    ) -> Result<Context> {
+        let attribs = [
+            egl::EGL_CONTEXT_CLIENT_VERSION,
+            match client_version {
+                ContextClientVersion::OpenGlEs1 => 1,
+                ContextClientVersion::OpenGlEs2 => 2,
+            },
+            egl::EGL_NONE,
+        ];
 
-        let attribs = [egl::EGL_CONTEXT_CLIENT_VERSION,
-                       match client_version {
-                           ContextClientVersion::OpenGlEs1 => 1,
-                           ContextClientVersion::OpenGlEs2 => 2,
-                       },
-                       egl::EGL_NONE];
-
-        let maybe_handle = egl::create_context_with_attribs(self.handle,
-                                                            config.handle(),
-                                                            ptr::null_mut(),
-                                                            &attribs);
+        let maybe_handle = egl::create_context_with_attribs(
+            self.handle,
+            config.handle(),
+            ptr::null_mut(),
+            &attribs,
+        );
 
         Ok(Context::from_handle(self.handle, maybe_handle?))
     }
@@ -249,10 +266,12 @@ impl Display {
 
     /// `[EGL 1.0]` Detatch an EGL rendering context from EGL surfaces and contexts.
     pub fn make_not_current(&self) -> Result<()> {
-        egl::make_current(self.handle,
-                               egl::EGL_NO_SURFACE,
-                               egl::EGL_NO_SURFACE,
-                               egl::EGL_NO_CONTEXT)?;
+        egl::make_current(
+            self.handle,
+            egl::EGL_NO_SURFACE,
+            egl::EGL_NO_SURFACE,
+            egl::EGL_NO_CONTEXT,
+        )?;
         Ok(())
     }
 
@@ -264,7 +283,8 @@ impl Display {
 
     /// Run an action with inner handle as parameter.
     pub fn with_handle<F, R>(&self, action: F) -> R
-        where F: FnOnce(egl::EGLDisplay) -> R
+    where
+        F: FnOnce(egl::EGLDisplay) -> R,
     {
         action(self.handle)
     }

@@ -30,12 +30,12 @@
 
 mod khronos;
 
-use std::mem;
+use error::{EglCallError, EglCallResult};
+use ffi;
 use std::ffi::CStr;
 use std::ffi::CString;
+use std::mem;
 use std::ptr;
-use ffi;
-use error::{EglCallError, EglCallResult};
 
 use libc::{c_uint, c_void};
 
@@ -129,7 +129,7 @@ pub const EGL_BAD_NATIVE_PIXMAP: EGLint = 0x300A;
 pub const EGL_BAD_NATIVE_WINDOW: EGLint = 0x300B;
 pub const EGL_BAD_PARAMETER: EGLint = 0x300C;
 pub const EGL_BAD_SURFACE: EGLint = 0x300D;
-pub const EGL_CONTEXT_LOST: EGLint = 0x300E;  // EGL 1.1 - IMG_power_management
+pub const EGL_CONTEXT_LOST: EGLint = 0x300E; // EGL 1.1 - IMG_power_management
 
 // config attributes
 pub const EGL_BUFFER_SIZE: EGLint = 0x3020;
@@ -164,15 +164,15 @@ pub const EGL_LUMINANCE_SIZE: EGLint = 0x303D;
 pub const EGL_ALPHA_MASK_SIZE: EGLint = 0x303E;
 pub const EGL_COLOR_BUFFER_TYPE: EGLint = 0x303F;
 pub const EGL_RENDERABLE_TYPE: EGLint = 0x3040;
-pub const EGL_MATCH_NATIVE_PIXMAP: EGLint = 0x3041;  // psseudo-attribute (not queryable)
+pub const EGL_MATCH_NATIVE_PIXMAP: EGLint = 0x3041; // psseudo-attribute (not queryable)
 pub const EGL_CONFORMANT: EGLint = 0x3042;
 
 // config attribute values
-pub const EGL_SLOW_CONFIG: EGLint = 0x3050;  // CONFIG_CAVEAT value
-pub const EGL_NON_CONFORMANT_CONFIG: EGLint = 0x3051;  // CONFIG_CAVEAT value
-pub const EGL_TRANSPARENT_RGB: EGLint = 0x3052;  // TRANSPARENT_TYPE value
-pub const EGL_RGB_BUFFER: EGLint = 0x308E;  // COLOR_BUFFER_TYPE value
-pub const EGL_LUMINANCE_BUFFER: EGLint = 0x308F;  // COLOR_BUFFER_TYPE value
+pub const EGL_SLOW_CONFIG: EGLint = 0x3050; // CONFIG_CAVEAT value
+pub const EGL_NON_CONFORMANT_CONFIG: EGLint = 0x3051; // CONFIG_CAVEAT value
+pub const EGL_TRANSPARENT_RGB: EGLint = 0x3052; // TRANSPARENT_TYPE value
+pub const EGL_RGB_BUFFER: EGLint = 0x308E; // COLOR_BUFFER_TYPE value
+pub const EGL_LUMINANCE_BUFFER: EGLint = 0x308F; // COLOR_BUFFER_TYPE value
 
 // more config attribute values, for TEXTURE_FORMAT
 pub const EGL_NO_TEXTURE: EGLint = 0x305C;
@@ -208,8 +208,8 @@ pub const EGL_BACK_BUFFER: EGLint = 0x3084;
 pub const EGL_SINGLE_BUFFER: EGLint = 0x3085;
 
 // OpenVG color spaces */
-pub const EGL_VG_COLORSPACE_sRGB: EGLint = 0x3089;  // VG_COLORSPACE value
-pub const EGL_VG_COLORSPACE_LINEAR: EGLint = 0x308A;  // VG_COLORSPACE value
+pub const EGL_VG_COLORSPACE_sRGB: EGLint = 0x3089; // VG_COLORSPACE value
+pub const EGL_VG_COLORSPACE_LINEAR: EGLint = 0x308A; // VG_COLORSPACE value
 
 // OpenVG alpha formats
 pub const EGL_VG_ALPHA_FORMAT_NONPRE: EGLint = 0x308B; // ALPHA_FORMAT value
@@ -364,10 +364,11 @@ pub fn bind_api(api: EGLenum) -> EglCallResult<()> {
 }
 
 /// `[EGL 1.1]` Defines a two-dimensional texture image.
-pub fn bind_tex_image(display: EGLDisplay,
-                      surface: EGLSurface,
-                      buffer: EGLint)
-                      -> EglCallResult<()> {
+pub fn bind_tex_image(
+    display: EGLDisplay,
+    surface: EGLSurface,
+    buffer: EGLint,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglBindTexImage(display, surface, buffer) } != EGL_TRUE {
         return Err(EglCallError::BindTexImage);
     }
@@ -382,12 +383,15 @@ pub fn bind_tex_image(display: EGLDisplay,
 pub fn num_filtered_configs(display: EGLDisplay, attrib_list: &[EGLint]) -> EglCallResult<i32> {
     let mut count: i32 = 0;
     if unsafe {
-        ffi::eglChooseConfig(display,
-                             attrib_list.as_ptr(),
-                             ptr::null_mut(),
-                             0,
-                             &mut count)
-    } != EGL_TRUE {
+        ffi::eglChooseConfig(
+            display,
+            attrib_list.as_ptr(),
+            ptr::null_mut(),
+            0,
+            &mut count,
+        )
+    } != EGL_TRUE
+    {
         return Err(EglCallError::ChooseConfig);
     }
     Ok(count as i32)
@@ -398,28 +402,33 @@ pub fn num_filtered_configs(display: EGLDisplay, attrib_list: &[EGLint]) -> EglC
 /// Calls `eglChooseConfig` internally.
 ///
 /// Returns the number of configs written, `None` on failure.
-pub fn get_filtered_configs(display: EGLDisplay,
-                            attrib_list: &[EGLint],
-                            configs: &mut [EGLConfig])
-                            -> EglCallResult<i32> {
+pub fn get_filtered_configs(
+    display: EGLDisplay,
+    attrib_list: &[EGLint],
+    configs: &mut [EGLConfig],
+) -> EglCallResult<i32> {
     let mut count: i32 = 0;
     if unsafe {
-        ffi::eglChooseConfig(display,
-                             attrib_list.as_ptr(),
-                             mem::transmute(configs.as_mut_ptr()),
-                             configs.len() as i32,
-                             &mut count)
-    } != EGL_TRUE {
+        ffi::eglChooseConfig(
+            display,
+            attrib_list.as_ptr(),
+            mem::transmute(configs.as_mut_ptr()),
+            configs.len() as i32,
+            &mut count,
+        )
+    } != EGL_TRUE
+    {
         return Err(EglCallError::ChooseConfig);
     }
     Ok(count as i32)
 }
 
 /// `[EGL 1.0]` Copy EGL surface color buffer to a native pixmap.
-pub fn copy_buffers(display: EGLDisplay,
-                    surface: EGLSurface,
-                    target: EGLNativePixmapType)
-                    -> EglCallResult<()> {
+pub fn copy_buffers(
+    display: EGLDisplay,
+    surface: EGLSurface,
+    target: EGLNativePixmapType,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglCopyBuffers(display, surface, target) } != EGL_TRUE {
         return Err(EglCallError::CopyBuffers);
     }
@@ -440,11 +449,12 @@ pub fn create_context(display: EGLDisplay, config: EGLConfig) -> EglCallResult<E
 }
 
 /// `[EGL 1.0]` Create a new EGL rendering context.
-pub fn create_context_with_attribs(display: EGLDisplay,
-                                   config: EGLConfig,
-                                   share_context: EGLContext,
-                                   attrib_list: &[EGLint])
-                                   -> EglCallResult<EGLContext> {
+pub fn create_context_with_attribs(
+    display: EGLDisplay,
+    config: EGLConfig,
+    share_context: EGLContext,
+    attrib_list: &[EGLint],
+) -> EglCallResult<EGLContext> {
     unsafe {
         let context = ffi::eglCreateContext(display, config, share_context, attrib_list.as_ptr());
 
@@ -457,12 +467,13 @@ pub fn create_context_with_attribs(display: EGLDisplay,
 }
 
 /// `[EGL 1.2]` Create a new EGL pixel buffer surface bound to an OpenVG image.
-pub fn create_pbuffer_from_client_buffer(display: EGLDisplay,
-                                         buffer_type: EGLenum,
-                                         buffer: EGLClientBuffer,
-                                         config: EGLConfig,
-                                         attrib_list: &[EGLint])
-                                         -> EglCallResult<EGLSurface> {
+pub fn create_pbuffer_from_client_buffer(
+    display: EGLDisplay,
+    buffer_type: EGLenum,
+    buffer: EGLClientBuffer,
+    config: EGLConfig,
+    attrib_list: &[EGLint],
+) -> EglCallResult<EGLSurface> {
     unsafe {
         let attribs = if attrib_list.len() > 0 {
             attrib_list.as_ptr()
@@ -470,11 +481,8 @@ pub fn create_pbuffer_from_client_buffer(display: EGLDisplay,
             ptr::null()
         };
 
-        let surface = ffi::eglCreatePbufferFromClientBuffer(display,
-                                                            buffer_type,
-                                                            buffer,
-                                                            config,
-                                                            attribs);
+        let surface =
+            ffi::eglCreatePbufferFromClientBuffer(display, buffer_type, buffer, config, attribs);
 
         if !surface.is_null() {
             Ok(surface)
@@ -485,10 +493,11 @@ pub fn create_pbuffer_from_client_buffer(display: EGLDisplay,
 }
 
 /// `[EGL 1.0]` Create a new EGL pixel buffer surface.
-pub fn create_pbuffer_surface(display: EGLDisplay,
-                              config: EGLConfig,
-                              attrib_list: &[EGLint])
-                              -> EglCallResult<EGLSurface> {
+pub fn create_pbuffer_surface(
+    display: EGLDisplay,
+    config: EGLConfig,
+    attrib_list: &[EGLint],
+) -> EglCallResult<EGLSurface> {
     unsafe {
         let attribs = if attrib_list.len() > 0 {
             attrib_list.as_ptr()
@@ -507,11 +516,12 @@ pub fn create_pbuffer_surface(display: EGLDisplay,
 }
 
 /// `[EGL 1.0]` Create a new EGL pixmap surface.
-pub fn create_pixmap_surface(display: EGLDisplay,
-                             config: EGLConfig,
-                             pixmap: EGLNativePixmapType,
-                             attrib_list: &[EGLint])
-                             -> EglCallResult<EGLSurface> {
+pub fn create_pixmap_surface(
+    display: EGLDisplay,
+    config: EGLConfig,
+    pixmap: EGLNativePixmapType,
+    attrib_list: &[EGLint],
+) -> EglCallResult<EGLSurface> {
     unsafe {
         let attribs = if attrib_list.len() > 0 {
             attrib_list.as_ptr()
@@ -530,10 +540,11 @@ pub fn create_pixmap_surface(display: EGLDisplay,
 }
 
 /// `[EGL 1.0]` Create a new EGL window surface.
-pub fn create_window_surface(display: EGLDisplay,
-                             config: EGLConfig,
-                             window: EGLNativeWindowType)
-                             -> EglCallResult<EGLSurface> {
+pub fn create_window_surface(
+    display: EGLDisplay,
+    config: EGLConfig,
+    window: EGLNativeWindowType,
+) -> EglCallResult<EGLSurface> {
     unsafe {
         let surface = ffi::eglCreateWindowSurface(display, config, window, ptr::null());
 
@@ -546,11 +557,12 @@ pub fn create_window_surface(display: EGLDisplay,
 }
 
 /// `[EGL 1.0]` Create a new EGL window surface.
-pub fn create_window_surface_with_attribs(display: EGLDisplay,
-                                          config: EGLConfig,
-                                          window: EGLNativeWindowType,
-                                          attrib_list: &[EGLint])
-                                          -> EglCallResult<EGLSurface> {
+pub fn create_window_surface_with_attribs(
+    display: EGLDisplay,
+    config: EGLConfig,
+    window: EGLNativeWindowType,
+    attrib_list: &[EGLint],
+) -> EglCallResult<EGLSurface> {
     unsafe {
         let surface = ffi::eglCreateWindowSurface(display, config, window, attrib_list.as_ptr());
 
@@ -564,11 +576,12 @@ pub fn create_window_surface_with_attribs(display: EGLDisplay,
 
 /// `[EGL 1.5]` Create a new EGL window surface.
 #[cfg(feature = "egl_1_5")]
-pub fn create_platform_window_surface(display: EGLDisplay,
-                                      config: EGLConfig,
-                                      native_window: *mut c_void,
-                                      attrib_list: &[EGLAttrib])
-                                      -> EglCallResult<EGLSurface> {
+pub fn create_platform_window_surface(
+    display: EGLDisplay,
+    config: EGLConfig,
+    native_window: *mut c_void,
+    attrib_list: &[EGLAttrib],
+) -> EglCallResult<EGLSurface> {
     unsafe {
         let attribs = if attrib_list.len() > 0 {
             attrib_list.as_ptr()
@@ -603,11 +616,12 @@ pub fn destroy_surface(display: EGLDisplay, surface: EGLSurface) -> EglCallResul
 }
 
 /// `[EGL 1.0]` Return information about an EGL frame buffer configuration.
-pub fn get_config_attrib(display: EGLDisplay,
-                         config: EGLConfig,
-                         attribute: EGLint,
-                         value: &mut EGLint)
-                         -> EglCallResult<()> {
+pub fn get_config_attrib(
+    display: EGLDisplay,
+    config: EGLConfig,
+    attribute: EGLint,
+    value: &mut EGLint,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglGetConfigAttrib(display, config, attribute, value) } != EGL_TRUE {
         return Err(EglCallError::GetConfigAttrib);
     }
@@ -631,11 +645,14 @@ pub fn num_configs(display: EGLDisplay) -> EglCallResult<i32> {
 pub fn get_configs(display: EGLDisplay, configs: &mut [EGLConfig]) -> EglCallResult<i32> {
     let mut count: i32 = 0;
     if unsafe {
-        ffi::eglGetConfigs(display,
-                           mem::transmute(configs.as_mut_ptr()),
-                           configs.len() as i32,
-                           &mut count)
-    } != EGL_TRUE {
+        ffi::eglGetConfigs(
+            display,
+            mem::transmute(configs.as_mut_ptr()),
+            configs.len() as i32,
+            &mut count,
+        )
+    } != EGL_TRUE
+    {
         return Err(EglCallError::GetConfigs);
     }
     Ok(count as i32)
@@ -716,10 +733,11 @@ pub fn initialize(display: EGLDisplay) -> EglCallResult<()> {
 }
 
 /// `[EGL 1.0]` Initialize an EGL display connection and get EGL version.
-pub fn initialize_and_get_version(display: EGLDisplay,
-                                  major: &mut EGLint,
-                                  minor: &mut EGLint)
-                                  -> EglCallResult<()> {
+pub fn initialize_and_get_version(
+    display: EGLDisplay,
+    major: &mut EGLint,
+    minor: &mut EGLint,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglInitialize(display, major, minor) } != EGL_TRUE {
         return Err(EglCallError::Initialize);
     }
@@ -727,11 +745,12 @@ pub fn initialize_and_get_version(display: EGLDisplay,
 }
 
 /// `[EGL 1.0]` Attach an EGL rendering context to EGL surfaces.
-pub fn make_current(display: EGLDisplay,
-                    draw: EGLSurface,
-                    read: EGLSurface,
-                    ctx: EGLContext)
-                    -> EglCallResult<()> {
+pub fn make_current(
+    display: EGLDisplay,
+    draw: EGLSurface,
+    read: EGLSurface,
+    ctx: EGLContext,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglMakeCurrent(display, draw, read, ctx) } != EGL_TRUE {
         return Err(EglCallError::MakeCurrent);
     }
@@ -744,11 +763,12 @@ pub fn query_api() -> EGLenum {
 }
 
 /// `[EGL 1.0]` Return EGL rendering context information.
-pub fn query_context(display: EGLDisplay,
-                     ctx: EGLContext,
-                     attribute: EGLint,
-                     value: &mut EGLint)
-                     -> EglCallResult<()> {
+pub fn query_context(
+    display: EGLDisplay,
+    ctx: EGLContext,
+    attribute: EGLint,
+    value: &mut EGLint,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglQueryContext(display, ctx, attribute, value) } != EGL_TRUE {
         return Err(EglCallError::QueryContext);
     }
@@ -769,11 +789,12 @@ pub fn query_string(display: EGLDisplay, name: EGLint) -> EglCallResult<&'static
 }
 
 /// `[EGL 1.0]` Return EGL surface information.
-pub fn query_surface(display: EGLDisplay,
-                     surface: EGLSurface,
-                     attribute: EGLint,
-                     value: &mut EGLint)
-                     -> EglCallResult<()> {
+pub fn query_surface(
+    display: EGLDisplay,
+    surface: EGLSurface,
+    attribute: EGLint,
+    value: &mut EGLint,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglQuerySurface(display, surface, attribute, value) } != EGL_TRUE {
         return Err(EglCallError::QuerySurface);
     }
@@ -781,10 +802,11 @@ pub fn query_surface(display: EGLDisplay,
 }
 
 /// `[EGL 1.1]` Releases a color buffer that is being used as a texture.
-pub fn release_tex_image(display: EGLDisplay,
-                         surface: EGLSurface,
-                         buffer: EGLint)
-                         -> EglCallResult<()> {
+pub fn release_tex_image(
+    display: EGLDisplay,
+    surface: EGLSurface,
+    buffer: EGLint,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglReleaseTexImage(display, surface, buffer) } != EGL_TRUE {
         return Err(EglCallError::ReleaseTexImage);
     }
@@ -800,11 +822,12 @@ pub fn release_thread() -> EglCallResult<()> {
 }
 
 /// `[EGL 1.1]` Set an EGL surface attribute.
-pub fn surface_attrib(display: EGLDisplay,
-                      surface: EGLSurface,
-                      attribute: EGLint,
-                      value: EGLint)
-                      -> EglCallResult<()> {
+pub fn surface_attrib(
+    display: EGLDisplay,
+    surface: EGLSurface,
+    attribute: EGLint,
+    value: EGLint,
+) -> EglCallResult<()> {
     if unsafe { ffi::eglSurfaceAttrib(display, surface, attribute, value) } != EGL_TRUE {
         return Err(EglCallError::SurfaceAttrib);
     }

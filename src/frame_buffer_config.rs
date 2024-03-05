@@ -6,8 +6,8 @@
 // copied, modified, or distributed except according to those terms.
 
 use egl;
-use std::fmt;
 use error::Result;
+use std::fmt;
 use {ColorBufferType, ConfigCaveat, RenderableType, SurfaceType, TransparentType};
 
 /// `[EGL 1.0]` Reference to frame buffer configuration.
@@ -23,9 +23,10 @@ pub struct FrameBufferConfigRef {
 }
 
 impl FrameBufferConfigRef {
-    pub fn from_native(display_id: egl::EGLDisplay,
-                       config_handle: egl::EGLConfig)
-                       -> FrameBufferConfigRef {
+    pub fn from_native(
+        display_id: egl::EGLDisplay,
+        config_handle: egl::EGLConfig,
+    ) -> FrameBufferConfigRef {
         FrameBufferConfigRef {
             display_handle: display_id,
             config_handle: config_handle,
@@ -44,16 +45,14 @@ impl FrameBufferConfigRef {
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_ALPHA_SIZE` attribute.
     pub fn alpha_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_ALPHA_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_ALPHA_SIZE).map(|v| v as u32)
     }
 
     /// Returns the number of bits in the alpha mask buffer.
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_ALPHA_MASK_SIZE` attribute.
     pub fn alpha_mask_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_ALPHA_MASK_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_ALPHA_MASK_SIZE).map(|v| v as u32)
     }
 
     /// Returns whether color buffers can be bound to an RGB texture.
@@ -76,8 +75,7 @@ impl FrameBufferConfigRef {
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_BLUE_SIZE` attribute.
     pub fn blue_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_BLUE_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_BLUE_SIZE).map(|v| v as u32)
     }
 
     /// Returns the depth of the color buffer.
@@ -86,8 +84,7 @@ impl FrameBufferConfigRef {
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_BUFFER_SIZE` attribute.
     pub fn buffer_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_BUFFER_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_BUFFER_SIZE).map(|v| v as u32)
     }
 
     /// Returns the color buffer type.
@@ -130,16 +127,14 @@ impl FrameBufferConfigRef {
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_DEPTH_SIZE` attribute.
     pub fn depth_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_DEPTH_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_DEPTH_SIZE).map(|v| v as u32)
     }
 
     /// Returns the number of bits of green stored in the color buffer.
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_GREEN_SIZE` attribute.
     pub fn green_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_GREEN_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_GREEN_SIZE).map(|v| v as u32)
     }
 
     /// Returns the frame buffer level.
@@ -156,8 +151,7 @@ impl FrameBufferConfigRef {
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_LUMINANCE_SIZE` attribute.
     pub fn luminance_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_LUMINANCE_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_LUMINANCE_SIZE).map(|v| v as u32)
     }
 
     /// Returns the maximum width of a pixel buffer surface in pixels.
@@ -221,8 +215,7 @@ impl FrameBufferConfigRef {
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_RED_SIZE` attribute.
     pub fn red_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_RED_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_RED_SIZE).map(|v| v as u32)
     }
 
     /// Returns a bitmask indicating the types of supported client API contexts.
@@ -251,8 +244,7 @@ impl FrameBufferConfigRef {
     ///
     /// Calls `eglGetConfigAttrib` with `EGL_STENCIL_SIZE` attribute.
     pub fn stencil_size(&self) -> Result<u32> {
-        self.get_attrib(egl::EGL_STENCIL_SIZE)
-            .map(|v| v as u32)
+        self.get_attrib(egl::EGL_STENCIL_SIZE).map(|v| v as u32)
     }
 
     /// Returns a bitmask indicating the types of supported EGL surfaces.
@@ -298,10 +290,12 @@ impl FrameBufferConfigRef {
 
     fn get_attrib(&self, attribute: egl::EGLint) -> Result<egl::EGLint> {
         let mut value: egl::EGLint = 0;
-        egl::get_config_attrib(self.display_handle,
-                                    self.config_handle,
-                                    attribute,
-                                    &mut value)?;
+        egl::get_config_attrib(
+            self.display_handle,
+            self.config_handle,
+            attribute,
+            &mut value,
+        )?;
         Ok(value)
     }
 
@@ -337,10 +331,8 @@ impl FrameBufferConfigRef {
             .field("surface_type", &self.surface_type()?)
             .field("transparent_type", &self.transparent_type()?)
             .field("transparent_red_value", &self.transparent_red_value()?)
-            .field("transparent_green_value",
-                   &self.transparent_green_value()?)
-            .field("transparent_blue_value",
-                   &self.transparent_blue_value()?)
+            .field("transparent_green_value", &self.transparent_green_value()?)
+            .field("transparent_blue_value", &self.transparent_blue_value()?)
             .finish())
     }
 }
@@ -349,11 +341,10 @@ impl fmt::Debug for FrameBufferConfigRef {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.format_debug_struct(f) {
             Ok(result) => result,
-            Err(e) => {
-                f.debug_struct("FrameBufferConfigRef")
-                 .field("error", &format!("{:?}", e))
-                 .finish()
-            }
+            Err(e) => f
+                .debug_struct("FrameBufferConfigRef")
+                .field("error", &format!("{:?}", e))
+                .finish(),
         }
     }
 }

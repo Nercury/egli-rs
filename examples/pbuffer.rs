@@ -70,9 +70,17 @@ fn main() {
             .expect("failed to swap buffers");
 
         // get some pixels
-        let mut pixels = vec![0u8; 640*480*4];
+        let mut pixels = vec![0u8; 640 * 480 * 4];
         unsafe {
-            gl::ReadPixels(0, 0, 640, 480, gl::RGBA, gl::UNSIGNED_BYTE, pixels.as_mut_ptr() as *mut c_void);
+            gl::ReadPixels(
+                0,
+                0,
+                640,
+                480,
+                gl::RGBA,
+                gl::UNSIGNED_BYTE,
+                pixels.as_mut_ptr() as *mut c_void,
+            );
         }
 
         println!("{}:{}:{}:{}", pixels[0], pixels[1], pixels[2], pixels[3]);
